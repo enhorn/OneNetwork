@@ -1,15 +1,48 @@
+//
+//  OneNetworkTests.swift
+//  OneNetworkTests
+//
+//  Created by Robin Enhorn on 2019-10-08.
+//  Copyright © 2019 Enhorn. All rights reserved.
+//
+
 import XCTest
 @testable import OneNetwork
 
 final class OneNetworkTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(OneNetwork().text, "Hello, World!")
+
+    let network = OneNetwork()
+
+    func testBasicNetworkSuccess() {
+        let query: String = "我的猫喜欢喝牛奶".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
+        let url = URL(string: "https://api.pinyin.pepe.asia/pinyin/\(query)")!
+        let fetchExpectation = expectation(description: "Fetching the translation")
+
+        network.fetch(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser) in
+            XCTAssertEqual(result.text, "wǒ de māo xǐhuan hē niúnǎi")
+            fetchExpectation.fulfill()
+        }).ifFailed { error in
+            print(error)
+        }
+
+        wait(for: [fetchExpectation], timeout: 10.0)
     }
 
-    static var allTests = [
-        ("testExample", testExample),
-    ]
+    func testBasicNetworkFailure() {
+        let url = URL(string: "http://some.thing.that.should.not.exist/failing")!
+        let fetchExpectation = expectation(description: "This request should not work")
+
+        var failed: Bool = false
+        network.fetch(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser) in
+            fetchExpectation.fulfill()
+        }).ifFailed { error in
+            failed = true
+            fetchExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 10.0) { error in
+            XCTAssert(failed)
+        }
+    }
+
 }
