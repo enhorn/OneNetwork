@@ -17,7 +17,7 @@ private let defaultDecoder: JSONDecoder = {
     return e
 }()
 
-public class OneNetwork: ObservableObject {
+open class OneNetwork: ObservableObject {
 
     public enum Error: Swift.Error {
         case unknownJSON(rawValue: String)
