@@ -43,7 +43,7 @@ open class OneNetwork: ObservableObject {
     }
 
     @discardableResult
-    func fetch<T: Codable>(request: URLRequest, resultQueue: DispatchQueue = .main, onFetched: @escaping (T) -> Void) -> Self {
+    public func fetch<T: Codable>(request: URLRequest, resultQueue: DispatchQueue = .main, onFetched: @escaping (T) -> Void) -> Self {
         var req = request
         req.setValue(userAgent, forHTTPHeaderField: "User-Agent")
 
@@ -70,7 +70,7 @@ open class OneNetwork: ObservableObject {
     }
 
     @discardableResult
-    func ifFailed(_ callback: @escaping (Error) -> Void) -> UUID {
+    public func ifFailed(_ callback: @escaping (Error) -> Void) -> UUID {
         let id = UUID()
         failureCallbacks[id] = callback
         return id
