@@ -17,7 +17,7 @@ class TestNetwork: OneNetwork {
 
     func fetchTranslation(query: String) {
         let url = URL(string: "https://api.pinyin.pepe.asia/pinyin/\(query)")!
-        fetch(request: URLRequest(url: url), onFetched: { [weak self] (answer: TestAPIAnser) in
+        get(request: URLRequest(url: url), onFetched: { [weak self] (answer: TestAPIAnser?) in
             self?.translationAnswer = answer
         })
     }

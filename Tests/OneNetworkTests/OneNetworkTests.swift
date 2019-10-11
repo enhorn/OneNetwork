@@ -18,8 +18,9 @@ final class OneNetworkTests: XCTestCase {
         let url = URL(string: "https://api.pinyin.pepe.asia/pinyin/\(query)")!
         let fetchExpectation = expectation(description: "Fetching the translation")
 
-        network.fetch(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser) in
-            XCTAssertEqual(result.text, "wǒ de māo xǐhuan hē niúnǎi")
+        network.get(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser?) in
+            XCTAssertNotNil(result)
+            XCTAssertEqual(result?.text, "wǒ de māo xǐhuan hē niúnǎi")
             fetchExpectation.fulfill()
         }).ifFailed { error in
             print(error)
@@ -33,11 +34,12 @@ final class OneNetworkTests: XCTestCase {
         let fetchExpectation = expectation(description: "This request should not work")
 
         var failed: Bool = false
-        network.fetch(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser) in
+        network.get(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser?) in
             fetchExpectation.fulfill()
         }).ifFailed { error in
             failed = true
             fetchExpectation.fulfill()
+            print(error)
         }
 
         waitForExpectations(timeout: 10.0) { error in
