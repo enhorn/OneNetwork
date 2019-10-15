@@ -63,6 +63,8 @@ public extension OneNetwork {
 
 public extension OneNetwork {
 
+    /// Add one-time failure callback.
+    /// - Parameter callback: Callback to be called one if en error occurred.
     @discardableResult
     func ifFailed(_ callback: @escaping (Error) -> Void) -> UUID {
         let id = UUID()
