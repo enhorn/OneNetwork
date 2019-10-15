@@ -12,12 +12,10 @@ import Combine
 
 open class OneNetwork: ObservableObject {
 
-    public typealias Cache = NSCache<CacheKey, NSData>
-
     private let userAgent: String
     private let coder: Coder
     private let session: URLSession
-    private let cache: Cache?
+    private let cache: OneCache?
 
     internal var failureCallbacks: [UUID: (Error) -> Void] = [:]
 
@@ -27,8 +25,8 @@ open class OneNetwork: ObservableObject {
     /// - Parameter userAgent: Optional user agent. Defaults to iOS Safari user agent.
     /// - Parameter coder: Optional set of JSON enoder &  decoder. Defaults to a standard one with  date format `YYYY-MM-DD HH:mm`;
     /// - Parameter session: Optional URLSession. Defaults to `URLSession(configuration: .default)`.
-    /// - Parameter cache: Optional NSCache. Defaults to `nil`.
-    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, cache: Cache? = nil) {
+    /// - Parameter cache: Optional OneCache. Defaults to `nil`.
+    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, cache: OneCache? = nil) {
         self.userAgent = userAgent ?? defaultUserAgent
         self.coder = coder ?? defaultCoder
         self.session = session ?? defaultURLSession
@@ -40,7 +38,7 @@ open class OneNetwork: ObservableObject {
 extension OneNetwork {
 
     func perform<T: Codable>(request: URLRequest, method: Method, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
-        let cacheKey = CacheKey(for: request)
+        let cacheKey = OneCacheKey(for: request)
 
         if let value: T = cached(at: cacheKey) {
             resultQueue.async {
@@ -50,7 +48,7 @@ extension OneNetwork {
             session.dataTask(with: configured(request, method: method)) { [weak self] data, _, error in
                 if let error = error { self?.report(.other(originalError: error)); return }
                 guard let data = data else { onFetched(nil); return }
-                self?.cache?.setObject(data as NSData, forKey: cacheKey)
+                self?.cache?.cacheData(data, for: cacheKey)
                 self?.handle(data, resultQueue: resultQueue, onFetched: onFetched)
             }.resume()
         }
@@ -59,7 +57,7 @@ extension OneNetwork {
     }
 
     func perform(request: URLRequest, method: Method, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]) -> Void) -> Self {
-        let cacheKey = CacheKey(for: request)
+        let cacheKey = OneCacheKey(for: request)
         if let value: [NSDictionary] = cachedDict(at: cacheKey) {
             resultQueue.async {
                 onFetched(value)
@@ -68,7 +66,7 @@ extension OneNetwork {
             session.dataTask(with: configured(request, method: method)) { [weak self] data, _, error in
                 if let error = error { self?.report(.other(originalError: error)); return }
                 guard let data = data else { onFetched([]); return }
-                self?.cache?.setObject(data as NSData, forKey: cacheKey)
+                self?.cache?.cacheData(data, for: cacheKey)
                 self?.handle(data, resultQueue: resultQueue, onFetched: onFetched)
             }.resume()
         }
@@ -150,13 +148,13 @@ private extension OneNetwork {
         }
     }
 
-    func cachedDict(at key: CacheKey) -> [NSDictionary]? {
-        guard let data = cache?.object(forKey: key) else { return nil }
+    func cachedDict(at key: OneCacheKey) -> [NSDictionary]? {
+        guard let data = cache?.cache(for: key) else { return nil }
         return parse(data as Data)
     }
 
-    func cached<T: Codable>(at key: CacheKey) -> T? {
-        return cache?.object(forKey: key).flatMap({ decode(from: $0 as Data) })
+    func cached<T: Codable>(at key: OneCacheKey) -> T? {
+        return cache?.cache(for: key).flatMap({ decode(from: $0) })
     }
 
     func decode<T: Codable>(from data: Data) -> T? {

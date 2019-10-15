@@ -1,5 +1,5 @@
 //
-//  OneNetworkCacheTests.swift
+//  OneCacheTests.swift
 //  
 //
 //  Created by Robin Enhorn on 2019-10-11.
@@ -8,16 +8,19 @@
 import XCTest
 @testable import OneNetwork
 
-final class OneNetworkCacheTests: XCTestCase {
+final class OneCacheTests: XCTestCase {
 
-    let cache = NSCache<OneNetwork.CacheKey, NSData>()
+    let cache = OneCache()
     lazy var network = OneNetwork(cache: cache)
 
     func testCachedData() {
         let request = URLRequest(url: URL(string: "http://nothing.should.ever.be.here.com")!)
         let data = try! JSONEncoder().encode(Cached(title: "Title", value: "Value"))
+        let key = OneCacheKey(for: request)
 
-        cache.setObject(data as NSData, forKey: OneNetwork.CacheKey(for: request))
+        XCTAssertFalse(cache.hasValue(for: key))
+        cache.cacheData(data, for: key)
+        XCTAssert(cache.hasValue(for: key))
 
         let fetchExpectation = expectation(description: "Wait for the cached response.")
         network.get(request: request, onFetched: { (result: Cached?) in
@@ -31,6 +34,11 @@ final class OneNetworkCacheTests: XCTestCase {
         }
 
         waitForExpectations(timeout: 10.0)
+
+        let popped = cache.removeCache(for: key)
+        XCTAssertNotNil(popped)
+        XCTAssertFalse(cache.hasValue(for: key))
+        XCTAssertNil(cache.cache(for: key))
     }
 
 }

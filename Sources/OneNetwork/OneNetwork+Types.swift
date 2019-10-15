@@ -38,36 +38,36 @@ public extension OneNetwork {
 
     }
 
-    /// Cache key for requests
-    class CacheKey: NSObject, RawRepresentable {
-
-        public typealias RawValue = String
-
-        private let key: NSString
-
-        /// Preferred initializer.
-        /// - Parameter request: URLRequest this key should be based upon.
-        init(for request: URLRequest) {
-            self.key = String(request.hashValue) as NSString
-        }
-
-        public override func isEqual(_ object: Any?) -> Bool {
-            guard let foreighKey = object as? CacheKey else { return false }
-            return key == foreighKey.key
-        }
-
-        public required init?(rawValue: String) {
-            self.key = NSString(string: rawValue)
-        }
-
-        public var rawValue: String { String(key) }
-
-    }
-
     /// Default encoder & decoder.
     struct Coder {
         let encoder: JSONEncoder
         let decoder: JSONDecoder
     }
+
+}
+
+/// Cache key for requests
+public class OneCacheKey: NSObject, RawRepresentable {
+
+    public typealias RawValue = String
+
+    private let key: NSString
+
+    /// Preferred initializer.
+    /// - Parameter request: URLRequest this key should be based upon.
+    init(for request: URLRequest) {
+        self.key = String(request.hashValue) as NSString
+    }
+
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let foreighKey = object as? OneCacheKey else { return false }
+        return key == foreighKey.key
+    }
+
+    public required init?(rawValue: String) {
+        self.key = NSString(string: rawValue)
+    }
+
+    public var rawValue: String { String(key) }
 
 }
