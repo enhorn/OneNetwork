@@ -12,10 +12,12 @@ import Combine
 
 open class OneNetwork: ObservableObject {
 
+    public typealias Cache = NSCache<CacheKey, NSData>
+
     private let userAgent: String
     private let coder: Coder
     private let session: URLSession
-    private let cache: NSCache<CacheKey, NSData>?
+    private let cache: Cache?
 
     internal var failureCallbacks: [UUID: (Error) -> Void] = [:]
 
@@ -26,7 +28,7 @@ open class OneNetwork: ObservableObject {
     /// - Parameter coder: Optional set of JSON enoder &  decoder. Defaults to a standard one with  date format `YYYY-MM-DD HH:mm`;
     /// - Parameter session: Optional URLSession. Defaults to `URLSession(configuration: .default)`.
     /// - Parameter cache: Optional NSCache. Defaults to `nil`.
-    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, cache: NSCache<CacheKey, NSData>? = nil) {
+    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, cache: Cache? = nil) {
         self.userAgent = userAgent ?? defaultUserAgent
         self.coder = coder ?? defaultCoder
         self.session = session ?? defaultURLSession

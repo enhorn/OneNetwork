@@ -39,7 +39,9 @@ public extension OneNetwork {
     }
 
     /// Cache key for requests
-    class CacheKey: NSObject {
+    class CacheKey: NSObject, RawRepresentable {
+
+        public typealias RawValue = String
 
         private let key: NSString
 
@@ -53,6 +55,12 @@ public extension OneNetwork {
             guard let foreighKey = object as? CacheKey else { return false }
             return key == foreighKey.key
         }
+
+        public required init?(rawValue: String) {
+            self.key = NSString(string: rawValue)
+        }
+
+        public var rawValue: String { String(key) }
 
     }
 
