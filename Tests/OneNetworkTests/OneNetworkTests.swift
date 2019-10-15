@@ -11,12 +11,31 @@ import XCTest
 
 final class OneNetworkTests: XCTestCase {
 
-    let network = OneNetwork()
+    var logger = TestLogger()
+    var network = OneNetwork()
+
+    override func setUp() {
+        logger = TestLogger()
+        network = OneNetwork(logger: logger)
+    }
 
     func testBasicNetworkSuccess() {
         let query: String = "我的猫喜欢喝牛奶".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
         let url = URL(string: "https://api.pinyin.pepe.asia/pinyin/\(query)")!
+
         let fetchExpectation = expectation(description: "Fetching the translation")
+        let logFetchingExpectation = expectation(description: "Expect to get the fetching message")
+        let logFetchedExpectation = expectation(description: "Expect to get the fetched message")
+
+        logger.onInfo = { message in
+            if message == "Fetching [TestAPIAnser]: \(url.absoluteString)" {
+                logFetchingExpectation.fulfill()
+            } else if message == "Fetched [TestAPIAnser]: \(url.absoluteString)" {
+                logFetchedExpectation.fulfill()
+            } else {
+                XCTFail("Strange message: \(message)")
+            }
+        }
 
         network.get(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser?) in
             XCTAssertNotNil(result)
@@ -26,25 +45,37 @@ final class OneNetworkTests: XCTestCase {
             print(error)
         }
 
-        wait(for: [fetchExpectation], timeout: 10.0)
+        wait(for: [fetchExpectation, logFetchingExpectation, logFetchedExpectation], timeout: 10.0)
     }
 
     func testBasicNetworkFailure() {
         let url = URL(string: "http://some.thing.that.should.not.exist/failing")!
         let fetchExpectation = expectation(description: "This request should not work")
+        let logFetchingExpectation = expectation(description: "Expect to get the fetching message")
+        let logErrorExpectation = expectation(description: "Expect to get the fetching message")
 
-        var failed: Bool = false
+        logger.onInfo = { message in
+            if message == "Fetching [TestAPIAnser]: \(url.absoluteString)" {
+                logFetchingExpectation.fulfill()
+            } else if message == "Fetched [TestAPIAnser]: \(url.absoluteString)" {
+                XCTFail("This should not be called.")
+            } else {
+                XCTFail("Strange message: \(message)")
+            }
+        }
+
+        logger.onError = { _ in
+            logErrorExpectation.fulfill()
+        }
+
         network.get(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser?) in
-            fetchExpectation.fulfill()
+            XCTFail("This should not be called.")
         }).ifFailed { error in
-            failed = true
             fetchExpectation.fulfill()
             print(error)
         }
 
-        waitForExpectations(timeout: 10.0) { error in
-            XCTAssert(failed)
-        }
+        wait(for: [fetchExpectation, logFetchingExpectation, logErrorExpectation], timeout: 10.0)
     }
 
 }
