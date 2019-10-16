@@ -33,7 +33,8 @@ open class OneCache {
     /// Reteive cacked data for a goven key.
     /// - Parameter key: Key to fetch with.
     open func cache(for key: OneCacheKey) -> Data? {
-        return cache.object(forKey: key) as Data?
+        guard let data: NSData = cache.object(forKey: key) else { return nil }
+        return data as Data
     }
 
     /// Remove cache fo the given key.
