@@ -16,7 +16,10 @@ open class OneCache {
 
     /// Designated Initializer.
     /// - Parameter initialData: Optional initial data to populate the cache with.
-    public init(initialData:[OneCacheKey: Data] = [:]) {
+    /// - Parameter cacheLimit: Cache size limit. Meazured in MB. Defaults to 4 MB.
+    public init(initialData:[OneCacheKey: Data] = [:], cacheLimit: UInt = 4) {
+        cache.evictsObjectsWithDiscardedContent = false
+        cache.totalCostLimit = Int(cacheLimit * 1024 * 1024)
         initialData.forEach { key, data in
             self.cacheData(data, for: key)
         }
@@ -26,7 +29,7 @@ open class OneCache {
     /// - Parameter data: Data to be cached.
     /// - Parameter key: Key to be cached at.
     open func cacheData(_ data: Data, for key: OneCacheKey) {
-        cache.setObject(data as NSData, forKey: key)
+        cache.setObject(data as NSData, forKey: key, cost: data.count)
         keys.insert(key)
     }
 
