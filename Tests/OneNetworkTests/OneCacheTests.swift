@@ -41,6 +41,26 @@ final class OneCacheTests: XCTestCase {
         XCTAssertNil(cache.cache(for: key))
     }
 
+    func testAvoidingCachedData() {
+        let request = URLRequest(url: URL(string: "http://nothing.should.ever.be.here.com")!)
+        let data = try! JSONEncoder().encode(Cached(title: "Title", value: "Value"))
+        let key = OneCacheKey(for: request)
+
+        XCTAssertFalse(cache.hasValue(for: key))
+        cache.cacheData(data, for: key)
+        XCTAssert(cache.hasValue(for: key))
+
+        let fetchExpectation = expectation(description: "Wait for the cache request to fail.")
+        network.get(request: request, useCache: false, onFetched: { (result: Cached?) in
+            XCTFail()
+            fetchExpectation.fulfill()
+        }).ifFailed { _ in
+            fetchExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 10.0)
+    }
+
 }
 
 struct Cached: Codable {

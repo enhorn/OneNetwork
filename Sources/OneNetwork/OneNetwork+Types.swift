@@ -20,9 +20,9 @@ public extension OneNetwork {
         case other(originalError: Swift.Error)
     }
 
-    internal enum Method {
+    internal enum Method: Equatable {
 
-        case get
+        case get(useCache: Bool = true)
         case post(parameters: [String: String]?)
         case put(parameters: [String: String]?)
         case delete

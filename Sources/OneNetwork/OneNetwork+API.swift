@@ -12,8 +12,8 @@ import Foundation
 public extension OneNetwork {
 
     @discardableResult
-    func get<T: Codable>(request: URLRequest, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
-        perform(request: request, method: .get, resultQueue: resultQueue, onFetched: onFetched)
+    func get<T: Codable>(request: URLRequest, useCache: Bool = true, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
+        perform(request: request, method: .get(useCache: useCache), resultQueue: resultQueue, onFetched: onFetched)
     }
 
     @discardableResult
@@ -38,8 +38,8 @@ public extension OneNetwork {
 public extension OneNetwork {
 
     @discardableResult
-    func get(request: URLRequest, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]?) -> Void) -> Self {
-        perform(request: request, method: .get, resultQueue: resultQueue, onFetched: onFetched)
+    func get(request: URLRequest, useCache: Bool = true, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]?) -> Void) -> Self {
+        perform(request: request, method: .get(useCache: useCache), resultQueue: resultQueue, onFetched: onFetched)
     }
 
     @discardableResult

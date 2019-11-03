@@ -44,7 +44,7 @@ extension OneNetwork {
         let cacheKey = OneCacheKey(for: request)
         let type = String(describing: T.self)
 
-        if let value: T = cached(at: cacheKey) {
+        if method.useCache, let value: T = cached(at: cacheKey) {
             request.url.flatMap { logger?.info("Cached [\(type)]: \($0.absoluteString)") }
             resultQueue.async {
                 onFetched(value)
@@ -55,7 +55,7 @@ extension OneNetwork {
                 if let error = error { self?.report(.other(originalError: error)); return }
                 guard let data = data else { onFetched(nil); return }
                 request.url.flatMap { self?.logger?.info("Fetched [\(type)]: \($0.absoluteString)") }
-                self?.cache?.cacheData(data, for: cacheKey)
+                if method.useCache { self?.cache?.cacheData(data, for: cacheKey) }
                 self?.handle(data, resultQueue: resultQueue, onFetched: onFetched)
             }.resume()
         }
@@ -65,7 +65,8 @@ extension OneNetwork {
 
     func perform(request: URLRequest, method: Method, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]) -> Void) -> Self {
         let cacheKey = OneCacheKey(for: request)
-        if let value: [NSDictionary] = cachedDict(at: cacheKey) {
+
+        if method.useCache, let value: [NSDictionary] = cachedDict(at: cacheKey) {
             request.url.flatMap { logger?.info("Cached [NSDictionary]: \($0.absoluteString)") }
             resultQueue.async {
                 onFetched(value)
@@ -76,7 +77,7 @@ extension OneNetwork {
                 if let error = error { self?.report(.other(originalError: error)); return }
                 guard let data = data else { onFetched([]); return }
                 request.url.flatMap { self?.logger?.info("Fetched [NSDictionary]: \($0.absoluteString)") }
-                self?.cache?.cacheData(data, for: cacheKey)
+                if method.useCache { self?.cache?.cacheData(data, for: cacheKey) }
                 self?.handle(data, resultQueue: resultQueue, onFetched: onFetched)
             }.resume()
         }
@@ -170,6 +171,19 @@ private extension OneNetwork {
 
     func decode<T: Codable>(from data: Data) -> T? {
         try? self.coder.decoder.decode(T.self, from: data)
+    }
+
+}
+
+private extension OneNetwork.Method {
+
+    var useCache: Bool {
+        switch self {
+        case .get(let useCache):
+            return useCache
+        case .post, .put, .delete:
+            return false
+        }
     }
 
 }

@@ -17,7 +17,8 @@ public class OneCacheKey: NSObject, RawRepresentable {
     /// Preferred initializer.
     /// - Parameter request: URLRequest this key should be based upon.
     init(for request: URLRequest) {
-        self.key = String(request.hashValue) as NSString
+        let string = request.url?.absoluteString ?? String(request.hashValue)
+        self.key = string as NSString
     }
 
     /// Custom initilizer for a raw value representation of the key.
