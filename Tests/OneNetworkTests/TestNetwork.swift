@@ -11,14 +11,16 @@ import Foundation
 
 class TestNetwork: OneNetwork {
 
-    var translationAnswer: TestAPIAnser? = nil {
+    var users: [User] = [] {
         willSet { objectWillChange.send() }
     }
 
-    func fetchTranslation(query: String) {
-        let url = URL(string: "https://api.pinyin.pepe.asia/pinyin/\(query)")!
-        get(request: URLRequest(url: url), onFetched: { [weak self] (answer: TestAPIAnser?) in
-            self?.translationAnswer = answer
+    func fetchUsers(fail: Bool = false) {
+        let path = fail ? "failing" : "users"
+        let url = URL(string: "https://jsonplaceholder.typicode.com/\(path)")!
+        get(request: URLRequest(url: url), onFetched: { [weak self] (users: [User]?) in
+            guard let users = users else { return }
+            self?.users = users
         })
     }
 

@@ -7,20 +7,24 @@
 
 import Foundation
 
-open class OneCache {
+open class OneCache: NSObject {
 
+    fileprivate typealias Storage = [StorageKey: NSData]
     typealias Cache = NSCache<OneCacheKey, NSData>
 
     private let cache: Cache = Cache()
+    private var storage: Storage = Storage()
     private var keys: Set<OneCacheKey> = []
 
     /// Designated Initializer.
     /// - Parameter initialData: Optional initial data to populate the cache with.
     /// - Parameter cacheLimit: Cache size limit. Meazured in MB. Defaults to 4 MB.
     public init(initialData:[OneCacheKey: Data] = [:], cacheLimit: UInt = 4) {
-        cache.evictsObjectsWithDiscardedContent = false
-        cache.totalCostLimit = Int(cacheLimit * 1024 * 1024)
+        super.init()
+        self.cache.totalCostLimit = Int(cacheLimit * 1024 * 1024)
+        self.cache.delegate = self
         initialData.forEach { key, data in
+            self.storage[StorageKey(data: data as NSData)] = data as NSData
             self.cacheData(data, for: key)
         }
     }
@@ -30,6 +34,7 @@ open class OneCache {
     /// - Parameter key: Key to be cached at.
     open func cacheData(_ data: Data, for key: OneCacheKey) {
         cache.setObject(data as NSData, forKey: key, cost: data.count)
+        storage[StorageKey(data: data as NSData)] = data as NSData
         keys.insert(key)
     }
 
@@ -44,14 +49,16 @@ open class OneCache {
     /// - Parameter key: Key to remove cache for.
     @discardableResult
     open func removeCache(for key: OneCacheKey) -> Data? {
-        let current = cache.object(forKey: key) as Data?
+        let current = cache.object(forKey: key)
         cache.removeObject(forKey: key)
         keys.remove(key)
-        return current
+        if let current = current { storage.removeValue(forKey: StorageKey(data: current)) }
+        return current as Data?
     }
 
     /// Remove all cached object.
     open func emptyCache() {
+        storage.removeAll()
         cache.removeAllObjects()
         keys.removeAll()
     }
@@ -70,6 +77,25 @@ open class OneCache {
     /// - Parameter key: Key to check for cache with.
     open func hasValue(for key: OneCacheKey) -> Bool {
         return keys.contains(key)
+    }
+
+}
+
+extension OneCache: NSCacheDelegate {
+
+    public func cache(_ cache: NSCache<OneCacheKey, NSData>, willEvictObject obj: NSData) {
+        storage.removeValue(forKey: StorageKey(data: obj))
+    }
+
+}
+
+// Don't waste RAM by keeping a copy of the data as Key.
+private class StorageKey: NSObject {
+
+    let dataHash: Int
+
+    init(data: NSData) {
+        self.dataHash = data.hashValue
     }
 
 }

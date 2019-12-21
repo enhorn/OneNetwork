@@ -16,41 +16,36 @@ class ObservedSubclassedNetworkTests: XCTestCase {
     var cancellable: AnyCancellable?
 
     override func setUp() {
-        testNetwork.translationAnswer = nil
+        testNetwork.users = []
         cancellable = nil
     }
 
     func testSubclassedAndObservedNetworkSuccess() {
-        let query: String = "我的猫喜欢喝牛奶".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
+        XCTAssert(testNetwork.users.isEmpty)
 
-        XCTAssertNil(testNetwork.translationAnswer)
-
-        let fetchExpectation = expectation(description: "The fetched translation should be reported.")
+        let fetchExpectation = expectation(description: "The fetched users list should be reported.")
         cancellable = testNetwork.objectWillChange.sink {
             fetchExpectation.fulfill()
         }
 
-        testNetwork.fetchTranslation(query: query)
+        testNetwork.fetchUsers()
 
         waitForExpectations(timeout: 10.0) { error in
-            XCTAssertNotNil(self.testNetwork.translationAnswer)
-            XCTAssertEqual(self.testNetwork.translationAnswer?.text, "wǒ de māo xǐhuan hē niúnǎi")
+            XCTAssertFalse(self.testNetwork.users.isEmpty)
         }
     }
 
     func testSubclassedAndObservedNetworkFailure() {
-        let query: String = "this-should-fail"
-
-        XCTAssertNil(testNetwork.translationAnswer)
+        XCTAssert(testNetwork.users.isEmpty)
 
         cancellable = testNetwork.objectWillChange.sink {
             XCTFail("This should not report an object change")
         }
 
-        let fetchExpectation = expectation(description: "The fetched translation should not be reported.")
+        let fetchExpectation = expectation(description: "The fetched users list should not be reported.")
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: fetchExpectation.fulfill)
 
-        testNetwork.fetchTranslation(query: query)
+        testNetwork.fetchUsers(fail: true)
         wait(for: [fetchExpectation], timeout: 10.0)
     }
 

@@ -20,26 +20,25 @@ final class OneNetworkTests: XCTestCase {
     }
 
     func testBasicNetworkSuccess() {
-        let query: String = "我的猫喜欢喝牛奶".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
-        let url = URL(string: "https://api.pinyin.pepe.asia/pinyin/\(query)")!
+        let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
 
-        let fetchExpectation = expectation(description: "Fetching the translation")
+        let fetchExpectation = expectation(description: "Fetching the user list")
         let logFetchingExpectation = expectation(description: "Expect to get the fetching message")
         let logFetchedExpectation = expectation(description: "Expect to get the fetched message")
 
         logger.onInfo = { message in
-            if message == "Fetching [TestAPIAnser]: \(url.absoluteString)" {
+            if message == "Fetching [Array<User>]: \(url.absoluteString)" {
                 logFetchingExpectation.fulfill()
-            } else if message == "Fetched [TestAPIAnser]: \(url.absoluteString)" {
+            } else if message == "Fetched [Array<User>]: \(url.absoluteString)" {
                 logFetchedExpectation.fulfill()
             } else {
                 XCTFail("Strange message: \(message)")
             }
         }
 
-        network.get(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser?) in
+        network.get(request: URLRequest(url: url), onFetched: { (result: [User]?) in
             XCTAssertNotNil(result)
-            XCTAssertEqual(result?.text, "wǒ de māo xǐhuan hē niúnǎi")
+            XCTAssertFalse(result!.isEmpty)
             fetchExpectation.fulfill()
         }).ifFailed { error in
             print(error)
@@ -55,9 +54,9 @@ final class OneNetworkTests: XCTestCase {
         let logErrorExpectation = expectation(description: "Expect to get the fetching message")
 
         logger.onInfo = { message in
-            if message == "Fetching [TestAPIAnser]: \(url.absoluteString)" {
+            if message == "Fetching [Array<User>]: \(url.absoluteString)" {
                 logFetchingExpectation.fulfill()
-            } else if message == "Fetched [TestAPIAnser]: \(url.absoluteString)" {
+            } else if message == "Fetched [Array<User>]: \(url.absoluteString)" {
                 XCTFail("This should not be called.")
             } else {
                 XCTFail("Strange message: \(message)")
@@ -68,7 +67,7 @@ final class OneNetworkTests: XCTestCase {
             logErrorExpectation.fulfill()
         }
 
-        network.get(request: URLRequest(url: url), onFetched: { (result: TestAPIAnser?) in
+        network.get(request: URLRequest(url: url), onFetched: { (result: [User]?) in
             XCTFail("This should not be called.")
         }).ifFailed { error in
             fetchExpectation.fulfill()

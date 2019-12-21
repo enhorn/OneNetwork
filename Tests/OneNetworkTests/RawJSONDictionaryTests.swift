@@ -17,8 +17,7 @@ final class RawJSONDictionaryTests: XCTestCase {
         let json: [NSDictionary] = try! JSONSerialization.jsonObject(with: data, options: []) as! [NSDictionary]
         let fetchExpectation = expectation(description: "Wait for it…")
 
-        let query: String = "苹果".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
-        let url = URL(string: "https://api.pinyin.pepe.asia/hanzi/\(query)")!
+        let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
 
         network.get(request: URLRequest(url: url), onFetched: { (result: [NSDictionary]?) in
             XCTAssertNotNil(result)
