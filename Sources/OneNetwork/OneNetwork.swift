@@ -139,10 +139,10 @@ private extension OneNetwork {
     }
 
     func report(_ error: Error) {
+        logger?.error(error)
         failureCallbacks.forEach { key, callback in
             callback(error)
             failureCallbacks.removeValue(forKey: key)
-            self.logger?.error(error)
         }
     }
 
