@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "OneNetwork",
+        "repositoryURL": "git@github.com:enhorn/OneNetwork.git",
+        "state": {
+          "branch": null,
+          "revision": "b35881a6bae52c1e5e1208ff828ce51b5a30117a",
+          "version": "0.0.17"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
