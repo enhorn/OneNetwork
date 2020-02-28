@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6B4006A723AE7F9100690B23 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD76C0F23AE7C44002ADB54 /* ContentView.swift */; };
-		6B66B67E23AE890800EE218E /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B66B67D23AE890800EE218E /* Logger.swift */; };
 		6B891E6623AE7DF0001D9D39 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B891E6523AE7DF0001D9D39 /* Network.swift */; };
 		6BF320E023AE776300A099AA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BF320DF23AE776300A099AA /* AppDelegate.swift */; };
 		6BF320E423AE776300A099AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BF320E323AE776300A099AA /* Assets.xcassets */; };
@@ -18,7 +17,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6B66B67D23AE890800EE218E /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6B891E6523AE7DF0001D9D39 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		6BD76C0F23AE7C44002ADB54 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6BF320DC23AE776300A099AA /* Thesaurus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thesaurus.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,7 +63,6 @@
 				6BF320E323AE776300A099AA /* Assets.xcassets */,
 				6BD76C0F23AE7C44002ADB54 /* ContentView.swift */,
 				6B891E6523AE7DF0001D9D39 /* Network.swift */,
-				6B66B67D23AE890800EE218E /* Logger.swift */,
 				6BF320EB23AE776300A099AA /* Info.plist */,
 				6BF320E823AE776300A099AA /* Main.storyboard */,
 				6BF320E523AE776300A099AA /* Preview Content */,
@@ -162,7 +159,6 @@
 				6BF320E023AE776300A099AA /* AppDelegate.swift in Sources */,
 				6B891E6623AE7DF0001D9D39 /* Network.swift in Sources */,
 				6B4006A723AE7F9100690B23 /* ContentView.swift in Sources */,
-				6B66B67E23AE890800EE218E /* Logger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

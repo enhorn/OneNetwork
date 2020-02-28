@@ -11,7 +11,7 @@ import OneNetwork
 
 struct ContentView: View {
 
-    @ObservedObject var network = Network(logger: Logger())
+    @ObservedObject var network = Network(logger: OneBasicLogger.standard)
 
     @State var apiKey: String
     @State var query: String
