@@ -29,6 +29,14 @@ open class OneCache: NSObject {
         }
     }
 
+    /// Convenience Initializer for default-populating a single cache key on init.
+    /// - Parameter key: Key to cache.
+    /// - Parameter data: Data that should be cached.
+    /// - Parameter cacheLimit: Cache size limit. Meazured in MB. Defaults to 4 MB.
+    public convenience init(key: OneCacheKey, data: Data, cacheLimit: UInt = 4) {
+        self.init(initialData: [key: data], cacheLimit: cacheLimit)
+    }
+
     /// Cache the given data at the key.
     /// - Parameter data: Data to be cached.
     /// - Parameter key: Key to be cached at.

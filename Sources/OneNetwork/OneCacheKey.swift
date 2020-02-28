@@ -23,7 +23,7 @@ public class OneCacheKey: NSObject, RawRepresentable {
 
     /// Custom initilizer for a raw value representation of the key.
     /// - Parameter rawValue: Raw String value representation of the key.
-    public required init?(rawValue: String) {
+    public required init(rawValue: String) {
         self.key = NSString(string: rawValue)
     }
 

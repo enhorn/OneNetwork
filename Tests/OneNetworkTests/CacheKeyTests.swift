@@ -14,14 +14,15 @@ final class CacheKeyTests: XCTestCase {
     func testStringRepresentable() {
         let key = OneCacheKey(rawValue: "my key")
         XCTAssertNotNil(key)
-        XCTAssertEqual(key!.rawValue, "my key")
+        XCTAssertEqual(key.rawValue, "my key")
     }
 
     func testURLRequest() {
-        let url = URL(string: "http://this.is.a.nice.url.com")!
+        let url = URL(string: "http://this.is.a.nice.url.com?query=hello")!
         let request = URLRequest(url: url)
         let key = OneCacheKey(for: request)
         XCTAssertNotNil(key)
+        XCTAssertEqual(key.rawValue, "http://this.is.a.nice.url.com?query=hello")
     }
 
 }
