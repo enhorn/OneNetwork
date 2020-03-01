@@ -11,21 +11,47 @@ import Foundation
 
 public extension OneNetwork {
 
+    /// GET request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - useCache: Whether or not to use any available cache. Defailt to `true`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    ///   - onFetched: Result callback with result type decoded.
     @discardableResult
     func get<T: Codable>(request: URLRequest, useCache: Bool = true, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
         perform(request: request, method: .get(useCache: useCache), resultQueue: resultQueue, onFetched: onFetched)
     }
 
+    /// POST request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - parameters: Parameters for the request. Defaults to `nil`.
+    ///   - useCache: Whether or not to use any available cache. Defailt to `true`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    ///   - onFetched: Result callback with result type decoded.
     @discardableResult
     func post<T: Codable>(request: URLRequest, parameters: [String: String]? = nil, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
         perform(request: request, method: .post(parameters: parameters), resultQueue: resultQueue, onFetched: onFetched)
     }
 
+    /// PUT request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - parameters: Parameters for the request. Defaults to `nil`.
+    ///   - useCache: Whether or not to use any available cache. Defailt to `true`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    ///   - onFetched: Result callback with result type decoded.
     @discardableResult
     func put<T: Codable>(request: URLRequest, parameters: [String: String]? = nil, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
         perform(request: request, method: .put(parameters: parameters), resultQueue: resultQueue, onFetched: onFetched)
     }
 
+    /// DELETE request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - useCache: Whether or not to use any available cache. Defailt to `true`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    ///   - onFetched: Result callback with result type decoded.
     @discardableResult
     func delete<T: Codable>(request: URLRequest, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
         perform(request: request, method: .delete, resultQueue: resultQueue, onFetched: onFetched)
