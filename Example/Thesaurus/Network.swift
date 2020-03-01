@@ -22,7 +22,7 @@ class Network: OneNetwork {
         guard let query = word.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
         let url = URL(string: "\(baseURL)/\(query)?key=\(apiKey)")!
         definitions = []
-        get(request: URLRequest(url: url), onFetched: { [weak self] (definitions: [Definition]?) in
+        get(request: URLRequest(url: url), onFetched: { [weak self] definitions in
             self?.definitions = definitions ?? []
         })
     }
