@@ -63,28 +63,6 @@ extension OneNetwork {
         return self
     }
 
-    func perform(request: URLRequest, method: Method, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]) -> Void) -> Self {
-        let cacheKey = OneCacheKey(for: request)
-
-        if method.useCache, let value: [NSDictionary] = cachedDict(at: cacheKey) {
-            request.url.flatMap { logger?.info("Cached [NSDictionary]: \($0.absoluteString)") }
-            resultQueue.async {
-                onFetched(value)
-            }
-        } else {
-            request.url.flatMap { logger?.info("Fetching [NSDictionary]: \($0.absoluteString)") }
-            session.dataTask(with: configured(request, method: method)) { [weak self] data, _, error in
-                if let error = error { self?.report(.other(originalError: error)); return }
-                guard let data = data else { onFetched([]); return }
-                request.url.flatMap { self?.logger?.info("Fetched [NSDictionary]: \($0.absoluteString)") }
-                if method.useCache { self?.cache?.cacheData(data, for: cacheKey) }
-                self?.handle(data, resultQueue: resultQueue, onFetched: onFetched)
-            }.resume()
-        }
-
-        return self
-    }
-
     private func configured(_ request: URLRequest, method: Method) -> URLRequest {
         var req = request
 
@@ -116,16 +94,6 @@ private extension OneNetwork {
         }
     }
 
-    func handle(_ data: Data, resultQueue: DispatchQueue, onFetched: @escaping ([NSDictionary]) -> Void) {
-        if let parsed = parse(data) {
-            resultQueue.async {
-                onFetched(parsed)
-            }
-        } else {
-            handleError(data, resultQueue: resultQueue)
-        }
-    }
-
     func handleError(_ data: Data, resultQueue: DispatchQueue) {
         if let string = String(data: data, encoding: .utf8) {
             resultQueue.async {
@@ -149,21 +117,6 @@ private extension OneNetwork {
 }
 
 private extension OneNetwork {
-
-    func parse(_ data: Data) -> [NSDictionary]? {
-        if let decoded = try? JSONSerialization.jsonObject(with: data, options: []) as? [NSDictionary] {
-            return decoded
-        } else if let decoded = try? JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
-            return [decoded]
-        } else {
-            return nil
-        }
-    }
-
-    func cachedDict(at key: OneCacheKey) -> [NSDictionary]? {
-        guard let data = cache?.cache(for: key) else { return nil }
-        return parse(data as Data)
-    }
 
     func cached<T: Codable>(at key: OneCacheKey) -> T? {
         return cache?.cache(for: key).flatMap({ decode(from: $0) })

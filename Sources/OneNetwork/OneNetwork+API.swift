@@ -33,32 +33,6 @@ public extension OneNetwork {
 
 }
 
-// MARK: JSON Dictionary Results
-
-public extension OneNetwork {
-
-    @discardableResult
-    func get(request: URLRequest, useCache: Bool = true, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]?) -> Void) -> Self {
-        perform(request: request, method: .get(useCache: useCache), resultQueue: resultQueue, onFetched: onFetched)
-    }
-
-    @discardableResult
-    func post(request: URLRequest, parameters: [String: String]? = nil, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]?) -> Void) -> Self {
-        perform(request: request, method: .post(parameters: parameters), resultQueue: resultQueue, onFetched: onFetched)
-    }
-
-    @discardableResult
-    func put(request: URLRequest, parameters: [String: String]? = nil, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]?) -> Void) -> Self {
-        perform(request: request, method: .put(parameters: parameters), resultQueue: resultQueue, onFetched: onFetched)
-    }
-
-    @discardableResult
-    func delete(request: URLRequest, resultQueue: DispatchQueue = .main, onFetched: @escaping ([NSDictionary]?) -> Void) -> Self {
-        perform(request: request, method: .delete, resultQueue: resultQueue, onFetched: onFetched)
-    }
-
-}
-
 // MARK: Error Handling
 
 public extension OneNetwork {
