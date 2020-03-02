@@ -53,5 +53,5 @@ struct ContentView_Previews: PreviewProvider {
 ```
 
 ## Example app
-The example macOS app built with SwiftUI included, to show how little is needed to get it up and running.
-Requires API key from here: https://dictionaryapi.com/products/api-collegiate-thesaurus
+The example iOS app built with SwiftUI included, using predestined requests & basic authentication, to show how little is needed to get it up and running.
+Uses the public example API from: https://reqres.in made by @benhowdle89
