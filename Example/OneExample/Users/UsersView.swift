@@ -16,11 +16,13 @@ struct UsersView: View {
     var body: some View {
         List(network.users) { user in
             NavigationLink(
-                destination: UserView(user: user),
-                label: { Text(user.displayName) }
-            )
+                destination: UserDetailsView(user: user),
+                label: { UserListItemView(user: user) }
+            ).onAppear {
+                self.network.preloadAdjacentPages(to: user)
+            }
         }.navigationBarTitle("Users")
-        .onAppear(perform: network.fetch)
+            .onAppear { self.network.fetchIfNeeded(page: 1) }
     }
 
 }

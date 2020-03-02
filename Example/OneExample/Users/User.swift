@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import SwiftUI
 
-struct User: Codable, Identifiable {
+struct User: Codable, Identifiable, Equatable {
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -24,8 +25,22 @@ struct User: Codable, Identifiable {
     let lastName: String
     let avatar: URL
 
+}
+
+extension User {
+
     var displayName: String {
         [firstName, lastName].joined(separator: " ")
+    }
+
+    func image(size: CGFloat, label: String) -> some View {
+        LoadingImage(
+            url: avatar,
+            label: label,
+            image: Image(systemName: "person.circle")
+        )
+        .frame(width: size, height: size, alignment: .center)
+        .cornerRadius(size / 2.0)
     }
 
 }

@@ -29,7 +29,7 @@ extension OneCache {
 
     static var users: OneCache {
         OneCache(
-            key: URL.users(token: .previewToken).cacheKey,
+            key: URL.users(token: .previewToken, page: 1).cacheKey,
             data: NSDataAsset(name: "users")!.data
         )
     }

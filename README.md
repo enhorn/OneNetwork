@@ -53,5 +53,5 @@ struct ContentView_Previews: PreviewProvider {
 ```
 
 ## Example app
-The example iOS app is built with SwiftUI and is using predestined requests for network free previews & basic authentication.
+The example iOS app is built with SwiftUI and is using predestined requests for network free previews & basic authentication & pagination.
 Uses the public example API from: https://reqres.in made by [@benhowdle89](https://github.com/benhowdle89)

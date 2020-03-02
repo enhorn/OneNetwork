@@ -11,24 +11,41 @@ import OneNetwork
 
 extension URL {
 
-    private static let baseURL = "https://reqres.in/api/"
-
-    private static func endpoint(with path: String, token: LoginToken? = nil) -> URL {
-        var urlString = baseURL + path
-
-        if let token = token {
-            urlString.append(contentsOf: "?token=\(token)")
-        }
-
-        return URL(string: urlString)!
-    }
-
     static var login: URL {
         .endpoint(with: "login")
     }
 
-    static func users(token: LoginToken) -> URL {
-        .endpoint(with: "users", token: token)
+    static func users(token: LoginToken, page: Int) -> URL {
+        return .endpoint(with: "users", token: token, params: [
+            "page": String(page)
+        ])
+    }
+
+}
+
+private extension URL {
+
+    private static let baseURL = "https://reqres.in/api/"
+
+    private static func endpoint(with path: String, token: LoginToken? = nil, params: [String:String]? = nil) -> URL {
+        var components = URLComponents(string: baseURL)!
+        var parameters: [URLQueryItem] = []
+
+        components.path.append(path)
+
+        if let token = token {
+            parameters.append(.init(name: "token", value: token))
+        }
+
+        params?.forEach { key, value in
+            parameters.append(.init(name: key, value: value))
+        }
+
+        if !parameters.isEmpty {
+            components.queryItems = parameters
+        }
+
+        return components.url!
     }
 
 }

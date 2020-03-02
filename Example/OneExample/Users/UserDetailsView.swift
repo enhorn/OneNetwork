@@ -9,16 +9,14 @@
 import Foundation
 import SwiftUI
 
-struct UserView: View {
+struct UserDetailsView: View {
 
     let user: User
 
     var body: some View {
         VStack(spacing: 32.0) {
             HStack {
-                LoadingImage(url: user.avatar, label: "User avatar", image: Image(systemName: "person.circle"))
-                    .frame(width: 300, height: 300, alignment: .center)
-                    .cornerRadius(150)
+                user.image(size: 300, label: "User avatar")
                     .shadow(color: Color.gray, radius: 8, x: 0, y: 3)
             }
             VStack(spacing: 8.0) {
@@ -34,15 +32,14 @@ struct UserView: View {
 
 }
 
-struct UserView_Previews: PreviewProvider {
+struct UserDetailsView_Previews: PreviewProvider {
 
     static var previews: some View {
-        NavigationView {
-            UserView(user: previewUser())
-        }
+        UserDetailsView(user: previewUser())
     }
 
     static func previewUser() -> User {
         try! JSONDecoder().decode(User.self, from: NSDataAsset(name: "user")!.data)
     }
+
 }
