@@ -16,6 +16,9 @@ public extension OneNetwork {
         /// Returned data was unparsable.
         case unparsableData(data: Data)
 
+        /// Returned status code was invalid. (<=200 or >=300)
+        case invalidStatus(code: Int, error: Swift.Error?, data: Data?, json: String?)
+
         /// Other type of error.
         case other(originalError: Swift.Error)
     }

@@ -14,15 +14,15 @@ class TestLogger: OneLogger {
     var onDebug: (String) -> Void = { _ in }
     var onError: (Error) -> Void = { _ in }
 
-    func info(_ message: String) {
+    override func info(_ message: String) {
         onInfo(message)
     }
 
-    func debug(_ message: String) {
+    override func debug(_ message: String) {
         onDebug(message)
     }
 
-    func error(_ error: Error) {
+    override func error(_ error: Error) {
         onError(error)
     }
 

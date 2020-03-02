@@ -27,8 +27,8 @@ open class OneNetwork: ObservableObject {
     /// - Parameter coder: Optional set of JSON enoder &  decoder. Defaults to a standard one with  date format `YYYY-MM-DD HH:mm`;
     /// - Parameter session: Optional URLSession. Defaults to `URLSession(configuration: .default)`.
     /// - Parameter cache: Optional OneCache. Defaults to `nil`.
-    /// - Parameter logger: Optional OneLogger. Defaults to `nil`.
-    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, cache: OneCache? = nil, logger: OneLogger? = nil) {
+    /// - Parameter logger: Optional OneLogger. Defaults to `.standard`.
+    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, cache: OneCache? = nil, logger: OneLogger? = .standard) {
         self.userAgent = userAgent ?? defaultUserAgent
         self.coder = coder ?? defaultCoder
         self.session = session ?? defaultURLSession
@@ -50,12 +50,33 @@ extension OneNetwork {
                 onFetched(value)
             }
         } else {
-            request.url.flatMap { logger?.info("Fetching [\(type)]: \($0.absoluteString)") }
-            session.dataTask(with: configured(request, method: method)) { [weak self] data, _, error in
-                if let error = error { self?.report(.other(originalError: error)); return }
-                guard let data = data else { onFetched(nil); return }
-                request.url.flatMap { self?.logger?.info("Fetched [\(type)]: \($0.absoluteString)") }
-                if method.useCache { self?.cache?.cacheData(data, for: cacheKey) }
+            request.url.flatMap { logger?.info("\(method.stringValue) START [\(type)]: \($0.absoluteString)") }
+            session.dataTask(with: configured(request, method: method)) { [weak self] data, response, error in
+                if let httpResponse = response as? HTTPURLResponse, !httpResponse.hasValidStatus {
+                    self?.report(.invalidStatus(
+                        code: httpResponse.statusCode,
+                        error: error,
+                        data: data,
+                        json: data.flatMap { String.init(data: $0, encoding: .utf8) }
+                    ))
+                    return
+                }
+
+                if let error = error {
+                    self?.report(.other(originalError: error))
+                    return
+                }
+
+                guard let data = data else { resultQueue.async { onFetched(nil) }; return }
+
+                if let url = request.url {
+                    self?.logger?.info("\(method.stringValue) DONE [\(type)]: \(url.absoluteString)")
+                }
+
+                if method.useCache {
+                    self?.cache?.cacheData(data, for: cacheKey)
+                }
+
                 self?.handle(data, resultQueue: resultQueue, onFetched: onFetched)
             }.resume()
         }
@@ -72,9 +93,13 @@ extension OneNetwork {
         switch method {
             case .get, .delete: break
             case .post(let parameters), .put(let parameters):
-                if let params = try? parameters.flatMap(coder.encoder.encode) {
-                    req.httpBody = params
+                guard let parameters = parameters else { break }
+                guard let params = try? coder.encoder.encode(parameters) else {
+                    logger?.debug("Could not encode parameters: \(parameters)")
+                    break
                 }
+                req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+                req.httpBody = params
         }
 
         return req
@@ -137,6 +162,14 @@ private extension OneNetwork.Method {
         case .post, .put, .delete:
             return false
         }
+    }
+
+}
+
+extension HTTPURLResponse {
+
+    var hasValidStatus: Bool {
+        return (statusCode < 300) && (statusCode >= 200)
     }
 
 }

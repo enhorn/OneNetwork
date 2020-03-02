@@ -41,3 +41,7 @@ struct Company: Codable {
     let catchPhrase: String
 
 }
+
+struct TokenSuccess: Codable {
+    let token: String
+}

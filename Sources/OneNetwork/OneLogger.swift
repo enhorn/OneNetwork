@@ -7,15 +7,9 @@
 
 import Foundation
 
-public protocol OneLogger {
-    func info(_ message: String)
-    func debug(_ message: String)
-    func error(_ error: Error)
-}
+open class OneLogger {
 
-public class OneBasicLogger: OneLogger {
-
-    public static let standard = OneBasicLogger()
+    public static let standard = OneLogger()
 
     public func info(_ message: String) {
         print("ℹ️ \(message)")
