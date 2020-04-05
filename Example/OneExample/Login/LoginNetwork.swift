@@ -11,11 +11,14 @@ import OneNetwork
 
 class LoginNetwork: OneNetwork {
 
+    typealias OnLoginSuccess = (_ token: LoginToken) -> Void
+    typealias OnLoginFail = (_ error: Error?) -> Void
+
     struct LoginResult: Codable {
         let token: LoginToken
     }
 
-    func login(email: String, password: String, onLoggedIn: ((LoginToken) -> Void)? = nil, onFail: (() -> Void)? = nil) {
+    func logIn(email: String, password: String, onLoggedIn: @escaping OnLoginSuccess, onFail: @escaping OnLoginFail) {
         post(
             request: URLRequest(url: .login),
             parameters: [
@@ -24,14 +27,26 @@ class LoginNetwork: OneNetwork {
             ],
             onFetched: { (result: LoginResult?) in
                 if let token = result?.token {
-                    onLoggedIn?(token)
+                    onLoggedIn(token)
                 } else {
-                    onFail?()
+                    onFail(nil)
                 }
             }
         ).ifFailed { error in
-            onFail?()
+            onFail(error)
         }
+    }
+
+    func logInWithOAuth(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
+        authenticate(
+            with: OneGoogleOAuthLogin(
+                clientID: "",
+                urlScheme: "",
+                scopes: [""]
+            ),
+            onLoggedIn: onLoggedIn,
+            onFail: onFail
+        )
     }
 
 }

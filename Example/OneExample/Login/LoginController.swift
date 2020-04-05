@@ -52,15 +52,26 @@ class LoginController: ObservableObject {
         self.network = network
     }
 
-    func login(email: String, password: String) {
+    func logIn(email: String, password: String) {
         status = .loggingIn
-        network.login(
+        network.logIn(
             email: email,
             password: password,
             onLoggedIn: { [weak self] token in
                 self?.status = .authenticated(token: token)
             },
-            onFail: { [weak self] in
+            onFail: { [weak self] error in
+                self?.status = .failed
+            }
+        )
+    }
+
+    func logInWithOAuth() {
+        network.logInWithOAuth(
+            onLoggedIn: { [weak self] token in
+                self?.status = .authenticated(token: token)
+            },
+            onFail: { [weak self] error in
                 self?.status = .failed
             }
         )

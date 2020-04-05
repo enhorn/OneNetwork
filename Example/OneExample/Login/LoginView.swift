@@ -18,7 +18,11 @@ struct LoginView: View {
 
     var body: some View {
         VStack(spacing: 32.0) {
-            Text("Inser your credentials").font(.title)
+            VStack {
+                Text("Inser your credentials").font(.title)
+                Text("(Any password)").foregroundColor(.secondary)
+            }
+
             VStack(spacing: 16.0) {
                 TextField("E-mail", text: $email)
                     .padding(12.0)
@@ -26,16 +30,24 @@ struct LoginView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(Color.gray, lineWidth: 1)
                     )
+
                 SecureField("Password", text: $password)
                     .padding(12.0)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(Color.gray, lineWidth: 1)
                     )
+
                 Button(action: {
-                    self.loginController.login(email: "eve.holt@reqres.in", password: "hopp")
+                    self.loginController.logIn(email: "eve.holt@reqres.in", password: "hopp")
                 }, label: { Text("Log In") })
             }
+
+            Text("or")
+
+            Button(action: {
+                self.loginController.logInWithOAuth()
+            }, label: { Text("Log in with OAuth") })
         }.padding(16.0)
     }
 
