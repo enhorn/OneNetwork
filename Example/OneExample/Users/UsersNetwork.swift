@@ -41,15 +41,15 @@ class UsersNetwork: OneNetwork {
 
     private let token: LoginToken
 
-    init(token: LoginToken, cache: OneCache? = nil) {
+    init(token: LoginToken, authentication: Authentication, cache: OneCache? = nil) {
         self.token = token
-        super.init(cache: cache)
+        super.init(authentication: authentication, cache: cache)
     }
 
     func fetchIfNeeded(page: Int) {
         guard !currentFetches.contains(page), !pages.contains(where: { $0.pageNumber == page }) else { return }
         currentFetches.insert(page)
-        get(request: URLRequest(url: .users(token: token, page: page))) { [weak self] (result: Page?) in
+        get(request: URLRequest(url: usersURL(page: page))) { [weak self] (result: Page?) in
             self?.currentFetches.remove(page)
             guard let page = result else { return }
             self?.pages.append(page)
@@ -73,6 +73,15 @@ class UsersNetwork: OneNetwork {
 }
 
 private extension UsersNetwork {
+
+    func usersURL(page: Int) -> URL {
+        switch authentication {
+        case .none, .custom:
+            return .users(token: token, page: page)
+        case .bearer:
+            return .users(page: page)
+        }
+    }
 
     func page(holding user: User) -> Page? {
         return pages.first { $0.users.contains(user) }

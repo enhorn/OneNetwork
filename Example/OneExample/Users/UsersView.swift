@@ -31,7 +31,11 @@ struct UsersView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             UsersView(
-                network: UsersNetwork(token: .previewToken, cache: .users)
+                network: UsersNetwork(
+                    token: .previewToken,
+                    authentication: .none,
+                    cache: .users
+                )
             )
         }
     }

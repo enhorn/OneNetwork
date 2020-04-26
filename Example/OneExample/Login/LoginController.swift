@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import OneNetwork
 
 typealias LoginToken = String
 
@@ -32,6 +33,8 @@ class LoginController: ObservableObject {
     private(set) var isAuthenticated: Bool = false {
         willSet { objectWillChange.send() }
     }
+
+    private(set) var authentication: OneNetwork.Authentication = .none
 
     private(set) var status: Status = .ready {
         willSet {
@@ -69,6 +72,7 @@ class LoginController: ObservableObject {
     func logInWithOAuth() {
         network.logInWithOAuth(
             onLoggedIn: { [weak self] token in
+                self?.authentication = .bearer(token: token)
                 self?.status = .authenticated(token: token)
             },
             onFail: { [weak self] error in

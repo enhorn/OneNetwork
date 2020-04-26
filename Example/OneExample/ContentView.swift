@@ -15,7 +15,10 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             if self.loginController.isAuthenticated {
-                UsersView(network: UsersNetwork(token: self.loginController.loginToken))
+                UsersView(network: UsersNetwork(
+                    token: self.loginController.loginToken,
+                    authentication: self.loginController.authentication
+                ))
             } else {
                 LoginView(loginController: loginController)
                     .navigationBarHidden(true)

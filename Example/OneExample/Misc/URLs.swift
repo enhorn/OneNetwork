@@ -15,8 +15,16 @@ extension URL {
         .endpoint(with: "login")
     }
 
+    // When authenticated by e-mail & password.
     static func users(token: LoginToken, page: Int) -> URL {
         return .endpoint(with: "users", token: token, params: [
+            "page": String(page)
+        ])
+    }
+
+    // When authenticated through OAuth.
+    static func users(page: Int) -> URL {
+        return .endpoint(with: "users", params: [
             "page": String(page)
         ])
     }
