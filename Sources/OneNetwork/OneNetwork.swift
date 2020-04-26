@@ -20,18 +20,23 @@ open class OneNetwork: ObservableObject {
 
     internal var failureCallbacks: [UUID: (Error) -> Void] = [:]
 
+    /// Authentication configuration.
+    public var authentication: Authentication
+
     public let objectWillChange = PassthroughSubject<Void, Never>()
 
     /// Designated Initializer.
     /// - Parameter userAgent: Optional user agent. Defaults to iOS Safari user agent.
     /// - Parameter coder: Optional set of JSON enoder &  decoder. Defaults to a standard one with  date format `YYYY-MM-DD HH:mm`;
     /// - Parameter session: Optional URLSession. Defaults to `URLSession(configuration: .default)`.
+    /// - Parameter authentication: Authentication configuration. Defaults to `.none`.
     /// - Parameter cache: Optional OneCache. Defaults to `nil`.
     /// - Parameter logger: Optional OneLogger. Defaults to `.standard`.
-    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, cache: OneCache? = nil, logger: OneLogger? = .standard) {
+    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, authentication: Authentication = .none, cache: OneCache? = nil, logger: OneLogger? = .standard) {
         self.userAgent = userAgent ?? defaultUserAgent
         self.coder = coder ?? defaultCoder
         self.session = session ?? defaultURLSession
+        self.authentication = authentication
         self.cache = cache
         self.logger = logger
     }
@@ -100,6 +105,14 @@ extension OneNetwork {
                 }
                 req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
                 req.httpBody = params
+        }
+
+        switch authentication {
+        case .none: ()
+        case .bearer(let token):
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        case .custom(let configure):
+            configure(request)
         }
 
         return req
