@@ -55,11 +55,13 @@ extension OneNetwork {
                 onFetched(value)
             }
         } else {
-            if let logger = logger, let url = request.url {
-                logger.info("\(method.stringValue) START [\(type)]: \(url.absoluteString) \(logHeaders(request: request))")
+            let configuredRequest = configured(request, method: method)
+
+            if let url = request.url {
+                logger?.info("\(method.stringValue) START [\(type)]: \(url.absoluteString) \(logHeaders(request: configuredRequest))")
             }
 
-            session.dataTask(with: configured(request, method: method)) { [weak self] data, response, error in
+            session.dataTask(with: configuredRequest) { [weak self] data, response, error in
                 if let httpResponse = response as? HTTPURLResponse, !httpResponse.hasValidStatus {
                     self?.report(.invalidStatus(
                         code: httpResponse.statusCode,
