@@ -55,7 +55,10 @@ extension OneNetwork {
                 onFetched(value)
             }
         } else {
-            request.url.flatMap { logger?.info("\(method.stringValue) START [\(type)]: \($0.absoluteString)") }
+            if let logger = logger, let url = request.url {
+                logger.info("\(method.stringValue) START [\(type)]: \(url.absoluteString) \(logHeaders(request: request))")
+            }
+
             session.dataTask(with: configured(request, method: method)) { [weak self] data, response, error in
                 if let httpResponse = response as? HTTPURLResponse, !httpResponse.hasValidStatus {
                     self?.report(.invalidStatus(
@@ -150,6 +153,16 @@ private extension OneNetwork {
             callback(error)
             failureCallbacks.removeValue(forKey: key)
         }
+    }
+
+    func logHeaders(request: URLRequest) -> String {
+        guard let headers = request.allHTTPHeaderFields, !headers.isEmpty else { return "" }
+
+        let values: [String] = headers.reduce([]) { current, next in
+            current + ["\(next.0): \(next.1)"]
+        }
+
+        return "{\(values.joined(separator: ", "))}"
     }
 
 }
