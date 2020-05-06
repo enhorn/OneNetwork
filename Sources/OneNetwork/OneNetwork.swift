@@ -79,8 +79,8 @@ extension OneNetwork {
 
                 guard let data = data else { resultQueue.async { onFetched(nil) }; return }
 
-                if let url = request.url {
-                    self?.logger?.info("\(method.stringValue) DONE [\(type)]: \(url.absoluteString)")
+                if let self = self, let url = request.url {
+                    self.logger?.info("\(method.stringValue) DONE [\(type)]: \(url.absoluteString) \(self.logHeaders(request: configuredRequest))")
                 }
 
                 if method.useCache {
