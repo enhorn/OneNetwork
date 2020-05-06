@@ -20,7 +20,7 @@ class ArticlesNetwork: OneNetwork {
 
     func updateArticleList() {
         let url = URL(string: "your endpoint url")
-        let request = URLRequest(url: url) // Apply authentication if needed.
+        let request = URLRequest(url: url) // Apply any custom authentication if needed.
         get(request: request) { [weak self] (result: [Article]?) in
             self?.articles = result ?? []
         }
