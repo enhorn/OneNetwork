@@ -160,8 +160,9 @@ private extension OneNetwork {
     func logHeaders(request: URLRequest) -> String {
         guard let headers = request.allHTTPHeaderFields, !headers.isEmpty else { return "" }
 
-        let values: [String] = headers.reduce([]) { current, next in
-            current + ["\(next.0): \(next.1)"]
+        let values: [String] = headers.keys.sorted().reduce([]) { current, key in
+            guard let value = headers[key] else { return current }
+            return current + ["\(key): \(value)"]
         }
 
         return "{\(values.joined(separator: ", "))}"
