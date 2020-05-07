@@ -22,7 +22,7 @@ open class OneOAuthLogin {
 
 public class OAuthPresentationViewController: UIViewController, ASWebAuthenticationPresentationContextProviding {
 
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         let window: UIWindow? = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .filter {
