@@ -13,14 +13,14 @@ import AuthenticationServices
 
 open class OneOAuthLogin {
 
-    internal lazy var presentationProvider = OAuthPresentationViewController()
+    public lazy var presentationProvider = OAuthPresentationViewController()
 
     /// Override this to build own OAuth implementations.
     open func start(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) { }
 
 }
 
-class OAuthPresentationViewController: UIViewController, ASWebAuthenticationPresentationContextProviding {
+public class OAuthPresentationViewController: UIViewController, ASWebAuthenticationPresentationContextProviding {
 
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         let window: UIWindow? = UIApplication.shared.connectedScenes
