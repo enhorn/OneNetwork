@@ -18,6 +18,8 @@ open class OneOAuthLogin {
     /// Override this to build own OAuth implementations.
     open func start(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) { }
 
+    public init() { }
+
 }
 
 public class OAuthPresentationViewController: UIViewController, ASWebAuthenticationPresentationContextProviding {
