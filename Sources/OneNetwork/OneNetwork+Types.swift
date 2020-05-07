@@ -57,15 +57,15 @@ public extension OneNetwork {
     struct Coder {
 
         /// Encoder to use.
-        let encoder: JSONEncoder
+        public let encoder: JSONEncoder
 
         /// Decoder to use.
-        let decoder: JSONDecoder
+        public let decoder: JSONDecoder
 
         /// - Parameters:
         ///   - encoder: Encoder to use.
         ///   - decoder: Decoder to use.
-        init(encoder: JSONEncoder, decoder: JSONDecoder) {
+        public init(encoder: JSONEncoder, decoder: JSONDecoder) {
             self.encoder = encoder
             self.decoder = decoder
         }
