@@ -6,7 +6,7 @@
 //  Copyright © 2020 Enhorn. All rights reserved.
 //
 
-#if canImport(UIKit) && canImport(AuthenticationServices)
+#if os(iOS) && canImport(AuthenticationServices)
 
 import UIKit
 import AuthenticationServices

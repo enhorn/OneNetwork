@@ -6,7 +6,7 @@
 //  Copyright © 2020 Enhorn. All rights reserved.
 //
 
-#if canImport(UIKit) && canImport(AuthenticationServices)
+#if canImport(UIKit) && !os(watchOS) && canImport(AuthenticationServices)
 
 import UIKit
 import AuthenticationServices
