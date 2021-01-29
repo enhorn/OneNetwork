@@ -48,6 +48,10 @@ struct LoginView: View {
             Button(action: {
                 self.loginController.logInWithOAuth()
             }, label: { Text("Log in with OAuth") })
+
+            Button(action: {
+                self.loginController.logInWithSpotifyOAuth()
+            }, label: { Text("Log in to Spotify with OAuth") })
         }.padding(16.0)
     }
 

@@ -81,4 +81,16 @@ class LoginController: ObservableObject {
         )
     }
 
+    func logInWithSpotifyOAuth() {
+        network.logInWithSpotifyOAuth(
+            onLoggedIn: { [weak self] token in
+                self?.authentication = .bearer(token: token)
+                self?.status = .authenticated(token: token)
+            },
+            onFail: { [weak self] error in
+                self?.status = .failed
+            }
+        )
+    }
+
 }

@@ -49,4 +49,19 @@ class LoginNetwork: OneNetwork {
         )
     }
 
+    func logInWithSpotifyOAuth(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
+        authenticate(
+            with: OneSpotifyOAuthLogin(
+                clientID: "",
+                clientSecret: "",
+                urlScheme: "onespot",
+                scopes: ["user-library-read"]
+            ),
+            onLoggedIn: onLoggedIn,
+            onFail: onFail
+        )
+    }
+
 }
+
+
