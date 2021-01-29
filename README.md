@@ -4,7 +4,7 @@ Minimalistic networking library with SwiftUI in mind.
 
 - Build simple UI components with 1:1 network connection to views.
 - Automatically parse to your `Codable` models from the response JSON.
-- Predestine your network responses during development, making your `PreviewProvider` implementations network independent. No need to muck about with complex mocking solutions for unit & UI tests.
+- Predestine your network responses during development, making your `PreviewProvider` implementations network independent. No need to muck about with complex mocking solutions for unit & UI tests either.
 - OAUth authentication, with predefined authentications for Google & Spotify.
 
 ## Example usage
