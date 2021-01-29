@@ -43,7 +43,7 @@ public class OneGoogleOAuthLogin: OneOAuthLogin {
                     let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                     let code = components.queryItems?.first(where: { $0.name == "code" })?.value
                 {
-                    onLoggedIn(code, nil, nil)
+                    onLoggedIn(OneNetwork.OauthSession(accessToken: code))
                 } else {
                     onFail(nil)
                 }

@@ -53,7 +53,11 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
                     let code = components.queryItems?.first(where: { $0.name == "code" })?.value
                 {
                     self.network.getAccessToken(code: code, onLoggedIn: {
-                        onLoggedIn($0.accessToken, $0.refreshToken, Date(timeIntervalSinceNow: $0.expiresIn))
+                        onLoggedIn(OneNetwork.OauthSession(
+                            accessToken: $0.accessToken,
+                            refreshToken: $0.refreshToken,
+                            expiryDate: Date(timeIntervalSinceNow: $0.expiresIn)
+                        ))
                     }, onFail: onFail)
                 } else {
                     onFail(nil)
@@ -73,7 +77,11 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
     ///   - onFail: Called when token refresh failed.
     public func refresh(onRefresh: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
         network.refresh(onRefreshed: {
-            onRefresh($0.accessToken, $0.refreshToken, Date(timeIntervalSinceNow: $0.expiresIn))
+            onRefresh(OneNetwork.OauthSession(
+                accessToken: $0.accessToken,
+                refreshToken: $0.refreshToken,
+                expiryDate: Date(timeIntervalSinceNow: $0.expiresIn)
+            ))
         }, onFail: onFail)
     }
 

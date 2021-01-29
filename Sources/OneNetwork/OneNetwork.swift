@@ -12,7 +12,10 @@ import Combine
 
 public enum OnePostEncodingMethod {
 
+    /// Will encode posted data as JSON.
     case json
+
+    /// Will encode posted data as Form URL encoded.
     case form
 
     var type: String {
@@ -41,12 +44,14 @@ open class OneNetwork: ObservableObject {
     public let objectWillChange = PassthroughSubject<Void, Never>()
 
     /// Designated Initializer.
-    /// - Parameter userAgent: Optional user agent. Defaults to iOS Safari user agent.
-    /// - Parameter coder: Optional set of JSON enoder &  decoder. Defaults to a standard one with  date format `YYYY-MM-DD HH:mm`;
-    /// - Parameter session: Optional URLSession. Defaults to `URLSession(configuration: .default)`.
-    /// - Parameter authentication: Authentication configuration. Defaults to `.none`.
-    /// - Parameter cache: Optional OneCache. Defaults to `nil`.
-    /// - Parameter logger: Optional OneLogger. Defaults to `.standard`.
+    /// - Parameters:
+    ///   - userAgent: Optional user agent. Defaults to iOS Safari user agent.
+    ///   - coder: Optional set of JSON enoder &  decoder. Defaults to a standard one with  date format `YYYY-MM-DD HH:mm`;
+    ///   - session: Optional URLSession. Defaults to `URLSession(configuration: .default)`.
+    ///   - authentication: Authentication configuration. Defaults to `.none`.
+    ///   - cache: Optional OneCache. Defaults to `nil`.
+    ///   - logger: Optional OneLogger. Defaults to `.standard`.
+    ///   - encodingMethod: Post encoding methos. Defaults to `.json`.
     public init(
         userAgent: String? = nil,
         coder: Coder? = nil,
