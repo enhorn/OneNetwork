@@ -11,11 +11,35 @@
 import UIKit
 import AuthenticationServices
 
-public typealias OneOauthLoginSuccess = (_ token: String) -> Void
+public typealias OneOauthLoginSuccess = (_ session: OneNetwork.OauthSession) -> Void
 public typealias OneOauthLoginFail = (_ error: Error?) -> Void
 
 private var oauthLogin: OneOAuthLogin?
 extension OneNetwork {
+
+    /// Session for OAuth logins.
+    public struct OauthSession {
+
+        /// Access token for the session.
+        public let accessToken: String
+
+        /// Refresh token for the session.
+        public let refreshToken: String?
+
+        /// Expiry date for the session.
+        public let expiryDate: Date?
+
+        /// - Parameters:
+        ///   - accessToken: Access token for the session.
+        ///   - refreshToken: Refresh token for the session. Defaults to `nil`.
+        ///   - expiryDate: Expiry date for the session. Defaults to `nil`.
+        init(accessToken: String, refreshToken: String? = nil, expiryDate: Date? = nil) {
+            self.accessToken = accessToken
+            self.refreshToken = refreshToken
+            self.expiryDate = expiryDate
+        }
+
+    }
 
     /// - Parameters:
     ///   - login: OAuth login controller.
@@ -24,8 +48,8 @@ extension OneNetwork {
     public func authenticate(with login: OneOAuthLogin, onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
         oauthLogin = login
         login.start(
-            onLoggedIn: { token in
-                onLoggedIn(token)
+            onLoggedIn: { session in
+                onLoggedIn(session)
                 oauthLogin = nil
             },
             onFail: { error in

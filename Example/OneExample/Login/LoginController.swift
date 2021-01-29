@@ -14,7 +14,7 @@ import OneNetwork
 typealias LoginToken = String
 
 extension LoginToken {
-    static let invalidToken: String = "Invlid Token"
+    static let invalidToken: String = "Invalid Token"
 }
 
 class LoginController: ObservableObject {
@@ -71,9 +71,21 @@ class LoginController: ObservableObject {
 
     func logInWithOAuth() {
         network.logInWithOAuth(
-            onLoggedIn: { [weak self] token in
-                self?.authentication = .bearer(token: token)
-                self?.status = .authenticated(token: token)
+            onLoggedIn: { [weak self] session in
+                self?.authentication = .bearer(token: session.accessToken)
+                self?.status = .authenticated(token: session.accessToken)
+            },
+            onFail: { [weak self] error in
+                self?.status = .failed
+            }
+        )
+    }
+
+    func logInWithSpotifyOAuth() {
+        network.logInWithSpotifyOAuth(
+            onLoggedIn: { [weak self] session in
+                self?.authentication = .bearer(token: session.accessToken)
+                self?.status = .authenticated(token: session.accessToken)
             },
             onFail: { [weak self] error in
                 self?.status = .failed

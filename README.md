@@ -55,10 +55,10 @@ struct ContentView_Previews: PreviewProvider {
 
 ## OAuth
 
-There is a standardized interface to perform OAuth authentication, where custom implementations can be supplied.
-Google authentication for iOS is available prebuilt as an example.
+There is a standardized interface to perform OAuth authentication on iOS, where custom implementations can be supplied.
+Both Google and Spotify authentications for iOS is available prebuilt.
 
-### Code example
+### Code example with Google OAuth
 
 ```swift
 extension ArticlesNetwork {
@@ -70,18 +70,40 @@ extension ArticlesNetwork {
                 urlScheme: "Your Google API app URL scheme",
                 scopes: ["API scope accesses that will be requested."]
             ),
-            onLoggedIn: { [weak self] token in
-                self?.save(token: token)
+            onLoggedIn: { [weak self] session in
+                /// Save the `session` for future use.
                 onDone(success: true)
             },
-            onFail: { _ in
+            onFail: { error in
                 onDone(success: false)
             }
         )
     }
 
-    func save(token: String) {
-        // Or what ever you want to do with it.
+}
+```
+
+### Code example with Spotify OAuth
+
+```swift
+extension ArticlesNetwork {
+
+    func login(onDone: @escaping (success: Bool) -> Void) {
+        authenticate(
+                with: OneSpotifyOAuthLogin(
+                clientID: "Your client ID",
+                clientSecret: "Your client secret",
+                redirectURI: "Your redirect URI",
+                scopes: ["API scope accesses that will be requested."]
+            ),
+            onLoggedIn: { [weak self] session in
+                /// Save the `session` for future use.
+                onDone(success: true)
+            },
+            onFail: { error in
+                onDone(success: false)
+            }
+        )
     }
 
 }

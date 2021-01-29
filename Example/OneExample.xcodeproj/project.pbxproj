@@ -436,8 +436,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:enhorn/OneNetwork.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.0.22;
+				branch = develop;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

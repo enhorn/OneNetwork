@@ -10,6 +10,23 @@ import Foundation
 import SwiftUI
 import Combine
 
+public enum OnePostEncodingMethod {
+
+    /// Will encode posted data as JSON.
+    case json
+
+    /// Will encode posted data as Form URL encoded.
+    case form
+
+    var type: String {
+        switch self {
+        case .json: return "application/json"
+        case .form: return "application/x-www-form-urlencoded"
+        }
+    }
+
+}
+
 open class OneNetwork: ObservableObject {
 
     private let userAgent: String
@@ -17,6 +34,7 @@ open class OneNetwork: ObservableObject {
     private let session: URLSession
     private let cache: OneCache?
     private let logger: OneLogger?
+    private let encodingMethod: OnePostEncodingMethod
 
     internal var failureCallbacks: [UUID: (Error) -> Void] = [:]
 
@@ -26,19 +44,30 @@ open class OneNetwork: ObservableObject {
     public let objectWillChange = PassthroughSubject<Void, Never>()
 
     /// Designated Initializer.
-    /// - Parameter userAgent: Optional user agent. Defaults to iOS Safari user agent.
-    /// - Parameter coder: Optional set of JSON enoder &  decoder. Defaults to a standard one with  date format `YYYY-MM-DD HH:mm`;
-    /// - Parameter session: Optional URLSession. Defaults to `URLSession(configuration: .default)`.
-    /// - Parameter authentication: Authentication configuration. Defaults to `.none`.
-    /// - Parameter cache: Optional OneCache. Defaults to `nil`.
-    /// - Parameter logger: Optional OneLogger. Defaults to `.standard`.
-    public init(userAgent: String? = nil, coder: Coder? = nil, session: URLSession? = nil, authentication: Authentication = .none, cache: OneCache? = nil, logger: OneLogger? = .standard) {
+    /// - Parameters:
+    ///   - userAgent: Optional user agent. Defaults to iOS Safari user agent.
+    ///   - coder: Optional set of JSON enoder &  decoder. Defaults to a standard one with  date format `YYYY-MM-DD HH:mm`;
+    ///   - session: Optional URLSession. Defaults to `URLSession(configuration: .default)`.
+    ///   - authentication: Authentication configuration. Defaults to `.none`.
+    ///   - cache: Optional OneCache. Defaults to `nil`.
+    ///   - logger: Optional OneLogger. Defaults to `.standard`.
+    ///   - encodingMethod: Post encoding methos. Defaults to `.json`.
+    public init(
+        userAgent: String? = nil,
+        coder: Coder? = nil,
+        session: URLSession? = nil,
+        authentication: Authentication = .none,
+        cache: OneCache? = nil,
+        logger: OneLogger? = .standard,
+        encodingMethod: OnePostEncodingMethod = .json
+    ) {
         self.userAgent = userAgent ?? defaultUserAgent
         self.coder = coder ?? defaultCoder
         self.session = session ?? defaultURLSession
         self.authentication = authentication
         self.cache = cache
         self.logger = logger
+        self.encodingMethod = encodingMethod
     }
 
 }
@@ -103,13 +132,13 @@ extension OneNetwork {
         switch method {
             case .get, .delete: break
             case .post(let parameters), .put(let parameters):
-                guard let parameters = parameters else { break }
-                guard let params = try? coder.encoder.encode(parameters) else {
+                guard let parameters = parameters, !parameters.isEmpty else { break }
+                guard let data = postData(parameters: parameters) else {
                     logger?.debug("Could not encode parameters: \(parameters)")
                     break
                 }
-                req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-                req.httpBody = params
+                req.httpBody = data
+                req.setValue("\(encodingMethod.type); charset=utf-8", forHTTPHeaderField: "Content-Type")
         }
 
         switch authentication {
@@ -121,6 +150,24 @@ extension OneNetwork {
         }
 
         return req
+    }
+
+    private func postData(parameters: [String: String]) -> Data? {
+        switch encodingMethod {
+        case .json:
+            return try? coder.encoder.encode(parameters)
+        case .form:
+            var body = ""
+
+            for (key, value) in parameters {
+                if let val = value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                    if !body.isEmpty { body.append("&") }
+                    body.append("\(key)=\(val)")
+                }
+            }
+
+            return body.data(using: .utf8)
+        }
     }
 
 }

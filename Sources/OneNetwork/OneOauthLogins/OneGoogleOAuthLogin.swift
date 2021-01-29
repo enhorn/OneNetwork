@@ -30,6 +30,10 @@ public class OneGoogleOAuthLogin: OneOAuthLogin {
         super.init()
     }
 
+    /// Start the login flow.
+    /// - Parameters:
+    ///   - onLoggedIn: Called when the authentication has succeeded.
+    ///   - onFail: Called when the authentication has failed.
     public override func start(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
         guard let url = url() else { return }
 
@@ -39,7 +43,7 @@ public class OneGoogleOAuthLogin: OneOAuthLogin {
                     let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                     let code = components.queryItems?.first(where: { $0.name == "code" })?.value
                 {
-                    onLoggedIn(code)
+                    onLoggedIn(OneNetwork.OauthSession(accessToken: code))
                 } else {
                     onFail(nil)
                 }

@@ -18,6 +18,19 @@ class LoginNetwork: OneNetwork {
         let token: LoginToken
     }
 
+    let googleAuthentication = OneGoogleOAuthLogin(
+        clientID: "",
+        urlScheme: "",
+        scopes: [""]
+    )
+
+    let spotifyAuthentication = OneSpotifyOAuthLogin(
+        clientID: "",
+        clientSecret: "",
+        redirectURI: "",
+        scopes: [""]
+    )
+
     func logIn(email: String, password: String, onLoggedIn: @escaping OnLoginSuccess, onFail: @escaping OnLoginFail) {
         post(
             request: URLRequest(url: .login),
@@ -38,15 +51,17 @@ class LoginNetwork: OneNetwork {
     }
 
     func logInWithOAuth(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
-        authenticate(
-            with: OneGoogleOAuthLogin(
-                clientID: "",
-                urlScheme: "",
-                scopes: [""]
-            ),
-            onLoggedIn: onLoggedIn,
-            onFail: onFail
-        )
+        authenticate(with: googleAuthentication, onLoggedIn: onLoggedIn, onFail: onFail)
+    }
+
+    func logInWithSpotifyOAuth(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
+        authenticate(with: spotifyAuthentication, onLoggedIn: onLoggedIn, onFail: onFail)
+    }
+
+    func refreshSpotifyOAuth(onRefresh: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
+        spotifyAuthentication.refresh(onRefresh: onRefresh, onFail: onFail)
     }
 
 }
+
+
