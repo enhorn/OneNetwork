@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import OneNetwork
 
 #if canImport(UIKit) && canImport(AuthenticationServices)
 
