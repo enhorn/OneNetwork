@@ -11,7 +11,7 @@
 import UIKit
 import AuthenticationServices
 
-public typealias OneOauthLoginSuccess = (_ token: String) -> Void
+public typealias OneOauthLoginSuccess = (_ token: String, _ refreshToken: String?, _ expiryDate: Date?) -> Void
 public typealias OneOauthLoginFail = (_ error: Error?) -> Void
 
 private var oauthLogin: OneOAuthLogin?
@@ -24,8 +24,8 @@ extension OneNetwork {
     public func authenticate(with login: OneOAuthLogin, onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
         oauthLogin = login
         login.start(
-            onLoggedIn: { token in
-                onLoggedIn(token)
+            onLoggedIn: { token, refreshToken, expiryDate in
+                onLoggedIn(token, refreshToken, expiryDate)
                 oauthLogin = nil
             },
             onFail: { error in
