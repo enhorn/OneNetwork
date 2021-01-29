@@ -26,7 +26,6 @@
 		6BB58E38240D2A5E004EE938 /* LoadingImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB58E37240D2A5E004EE938 /* LoadingImage.swift */; };
 		6BB58E39240D2FAA004EE938 /* UsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB58E31240D2274004EE938 /* UsersView.swift */; };
 		6BCAB8D2240D5F9900D43FE0 /* UserListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BCAB8D1240D5F9900D43FE0 /* UserListItemView.swift */; };
-		6BD488EA25C44D4700772BE5 /* OneSpotifyOAuthLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD488E925C44D4700772BE5 /* OneSpotifyOAuthLogin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,7 +49,6 @@
 		6BB58E35240D279E004EE938 /* UserDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsView.swift; sourceTree = "<group>"; };
 		6BB58E37240D2A5E004EE938 /* LoadingImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImage.swift; sourceTree = "<group>"; };
 		6BCAB8D1240D5F9900D43FE0 /* UserListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListItemView.swift; sourceTree = "<group>"; };
-		6BD488E925C44D4700772BE5 /* OneSpotifyOAuthLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneSpotifyOAuthLogin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,7 +118,6 @@
 				6BB58E1C240C430D004EE938 /* LoginController.swift */,
 				6BB58E24240CEF32004EE938 /* LoginNetwork.swift */,
 				6BB58E2A240D175E004EE938 /* LoginView.swift */,
-				6BD488E925C44D4700772BE5 /* OneSpotifyOAuthLogin.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -240,7 +237,6 @@
 				6BB58E2B240D175E004EE938 /* LoginView.swift in Sources */,
 				6BB58E36240D279E004EE938 /* UserDetailsView.swift in Sources */,
 				6BB58E29240CF488004EE938 /* Caches.swift in Sources */,
-				6BD488EA25C44D4700772BE5 /* OneSpotifyOAuthLogin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
