@@ -40,6 +40,10 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
         super.init()
     }
 
+    /// Start the login flow.
+    /// - Parameters:
+    ///   - onLoggedIn: Called when the authentication has succeeded.
+    ///   - onFail: Called when the authentication has failed.
     public override func start(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
         guard let url = url(), let scheme = URL(string: redirectURI)?.scheme else { return }
 
@@ -64,6 +68,22 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
         session.start()
     }
 
+    /// Refreshes the access token.
+    /// - Parameters:
+    ///   - onRefresh: Called when token refresh has succeeded.
+    ///   - onFail: Called when token refresh failed.
+    public func refresh(onRefresh: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
+        network.refresh(onRefreshed: {
+            onRefresh($0.accessToken, $0.refreshToken, Date(timeIntervalSinceNow: $0.expiresIn))
+        }, onFail: onFail)
+    }
+
+
+    /// Logs the newtwork out of the session.
+    public func logOut() {
+        network.deAuthenticate()
+    }
+
     private func url() -> URL? {
         var compontents = URLComponents(string: "https://accounts.spotify.com/authorize")
 
@@ -80,7 +100,7 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
 
 }
 
-public struct SpotifyAccessResult: Codable {
+private struct SpotifyAccessResult: Codable {
 
     enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
@@ -94,11 +114,11 @@ public struct SpotifyAccessResult: Codable {
     let tokenType: String
     let scope: String
     let expiresIn: TimeInterval
-    let refreshToken: SpotifyNetwork.Token
+    var refreshToken: SpotifyNetwork.Token?
 
 }
 
-class SpotifyNetwork: OneNetwork {
+private class SpotifyNetwork: OneNetwork {
 
     typealias Token = String
     typealias OnSuccess = (_ result: SpotifyAccessResult) -> Void
@@ -108,13 +128,7 @@ class SpotifyNetwork: OneNetwork {
     private let clientSecret: String
     private let redirectURI: String
 
-    var result: SpotifyAccessResult?
-    var login: Date?
-
-    var isExpired: Bool {
-        guard let result = result, let login = login else { return true }
-        return result.expiresIn >= Date().timeIntervalSince(login)
-    }
+    var session: SpotifyAccessResult?
 
     init(clientID: String, clientSecret: String, redirectURI: String) {
         self.clientID = clientID
@@ -135,8 +149,7 @@ class SpotifyNetwork: OneNetwork {
             ],
             onFetched: { [weak self] (result: SpotifyAccessResult?) in
                 if let result = result {
-                    self?.result = result
-                    self?.login = Date()
+                    self?.session = result
                     onLoggedIn(result)
                 } else {
                     self?.deAuthenticate()
@@ -150,8 +163,35 @@ class SpotifyNetwork: OneNetwork {
     }
 
     func deAuthenticate() {
-        result = nil
-        login = nil
+        session = nil
+        authentication = .none
+    }
+
+    func refresh(onRefreshed: @escaping OnSuccess, onFail: @escaping OnFail) {
+        guard let refreshToken = session?.refreshToken else { return }
+        post(
+            request: URLRequest(url: URL(string: "https://accounts.spotify.com/api/token")!),
+            parameters: [
+                "refresh_token": refreshToken,
+                "client_id": clientID,
+                "client_secret": clientSecret,
+                "grant_type": "refresh_token",
+                "redirect_uri": redirectURI
+            ],
+            onFetched: { [weak self] (result: SpotifyAccessResult?) in
+                if let result = result {
+                    self?.session = result
+                    self?.session?.refreshToken = refreshToken
+                    onRefreshed(self?.session ?? result)
+                } else {
+                    self?.deAuthenticate()
+                    onFail(nil)
+                }
+            }
+        ).ifFailed { [weak self] error in
+            self?.deAuthenticate()
+            onFail(error)
+        }
     }
 
 }

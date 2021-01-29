@@ -84,7 +84,6 @@ class LoginController: ObservableObject {
     func logInWithSpotifyOAuth() {
         network.logInWithSpotifyOAuth(
             onLoggedIn: { [weak self] token, refreshToken, expiryDate in
-                print(expiryDate)
                 self?.authentication = .bearer(token: token)
                 self?.status = .authenticated(token: token)
             },
