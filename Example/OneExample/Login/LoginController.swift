@@ -71,7 +71,7 @@ class LoginController: ObservableObject {
 
     func logInWithOAuth() {
         network.logInWithOAuth(
-            onLoggedIn: { [weak self] token in
+            onLoggedIn: { [weak self] token, _, _ in
                 self?.authentication = .bearer(token: token)
                 self?.status = .authenticated(token: token)
             },
@@ -83,7 +83,8 @@ class LoginController: ObservableObject {
 
     func logInWithSpotifyOAuth() {
         network.logInWithSpotifyOAuth(
-            onLoggedIn: { [weak self] token in
+            onLoggedIn: { [weak self] token, refreshToken, expiryDate in
+                print(expiryDate)
                 self?.authentication = .bearer(token: token)
                 self?.status = .authenticated(token: token)
             },

@@ -54,7 +54,7 @@ class LoginNetwork: OneNetwork {
             with: OneSpotifyOAuthLogin(
                 clientID: "",
                 clientSecret: "",
-                urlScheme: "onespot",
+                redirectURI: "",
                 scopes: ["user-library-read"]
             ),
             onLoggedIn: onLoggedIn,

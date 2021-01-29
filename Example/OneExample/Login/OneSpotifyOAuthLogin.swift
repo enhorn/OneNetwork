@@ -18,7 +18,7 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
     // APIs App Credentials
     private let clientID: String
     private let clientSecret: String
-    private let urlScheme: String
+    private let redirectURI: String
 
     /// API scopes
     private let scopes: [String]
@@ -29,27 +29,29 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
     /// - Parameters:
     ///   - clientID: App Client ID.
     ///   - clientSecret: App Client Secret.
-    ///   - urlScheme: App URL scheme.
+    ///   - redirectURI: Redirect URI.
     ///   - scopes: API scopes for the app.
-    public init (clientID: String, clientSecret: String, urlScheme: String, scopes: [String]) {
+    public init (clientID: String, clientSecret: String, redirectURI: String, scopes: [String]) {
         self.clientID = clientID
         self.clientSecret = clientSecret
-        self.urlScheme = urlScheme
+        self.redirectURI = redirectURI
         self.scopes = scopes
-        self.network = SpotifyNetwork(clientID: clientID, clientSecret: clientSecret, urlScheme: urlScheme)
+        self.network = SpotifyNetwork(clientID: clientID, clientSecret: clientSecret, redirectURI: redirectURI)
         super.init()
     }
 
     public override func start(onLoggedIn: @escaping OneOauthLoginSuccess, onFail: @escaping OneOauthLoginFail) {
-        guard let url = url() else { return }
+        guard let url = url(), let scheme = URL(string: redirectURI)?.scheme else { return }
 
-        let session = ASWebAuthenticationSession(url: url, callbackURLScheme: urlScheme) { [weak self] url, error in
+        let session = ASWebAuthenticationSession(url: url, callbackURLScheme: scheme) { [weak self] url, error in
             if let url = url, let self = self {
                 if
                     let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                     let code = components.queryItems?.first(where: { $0.name == "code" })?.value
                 {
-                    self.network.getAccessToken(code: code, onLoggedIn: { onLoggedIn($0.accessToken) }, onFail: onFail)
+                    self.network.getAccessToken(code: code, onLoggedIn: {
+                        onLoggedIn($0.accessToken, $0.refreshToken, Date(timeIntervalSinceNow: $0.expiresIn))
+                    }, onFail: onFail)
                 } else {
                     onFail(nil)
                 }
@@ -70,7 +72,7 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
             URLQueryItem(name: "client_secret", value: clientSecret),
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: scopes.joined(separator: ",")),
-            URLQueryItem(name: "redirect_uri", value: "\(urlScheme)://does.not.matter")
+            URLQueryItem(name: "redirect_uri", value: redirectURI)
         ]
 
         return compontents?.url
@@ -104,7 +106,7 @@ class SpotifyNetwork: OneNetwork {
 
     private let clientID: String
     private let clientSecret: String
-    private let urlScheme: String
+    private let redirectURI: String
 
     var result: SpotifyAccessResult?
     var login: Date?
@@ -114,12 +116,11 @@ class SpotifyNetwork: OneNetwork {
         return result.expiresIn >= Date().timeIntervalSince(login)
     }
 
-    init(clientID: String, clientSecret: String, urlScheme: String) {
+    init(clientID: String, clientSecret: String, redirectURI: String) {
         self.clientID = clientID
         self.clientSecret = clientSecret
-        self.urlScheme = urlScheme
-        super.init()
-        self.authentication = .bearer(token: "\(clientID):\(clientSecret)".data(using: .utf8)!.base64EncodedString())
+        self.redirectURI = redirectURI
+        super.init(encodingMethod: .form)
     }
 
     func getAccessToken(code: String, onLoggedIn: @escaping OnSuccess, onFail: @escaping OnFail) {
@@ -127,8 +128,10 @@ class SpotifyNetwork: OneNetwork {
             request: URLRequest(url: URL(string: "https://accounts.spotify.com/api/token")!),
             parameters: [
                 "code": code,
+                "client_id": clientID,
+                "client_secret": clientSecret,
                 "grant_type": "authorization_code",
-                "redirect_uri": "\(urlScheme)://does.not.matter"
+                "redirect_uri": redirectURI
             ],
             onFetched: { [weak self] (result: SpotifyAccessResult?) in
                 if let result = result {

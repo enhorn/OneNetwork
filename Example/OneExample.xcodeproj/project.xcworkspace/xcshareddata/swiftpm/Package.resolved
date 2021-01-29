@@ -5,9 +5,9 @@
         "package": "OneNetwork",
         "repositoryURL": "git@github.com:enhorn/OneNetwork.git",
         "state": {
-          "branch": null,
-          "revision": "5715ded91b03b33a9c7625f42d9167fc817ef26f",
-          "version": "0.0.38"
+          "branch": "develop",
+          "revision": "11ead589e57f0826e40a08590591540349b3399c",
+          "version": null
         }
       }
     ]
