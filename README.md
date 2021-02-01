@@ -64,7 +64,7 @@ Both Google and Spotify authentications for iOS is available prebuilt.
 ```swift
 extension ArticlesNetwork {
 
-    func login(onDone: @escaping (success: Bool) -> Void) {
+    func login(onDone: @escaping (_ success: Bool) -> Void) {
         authenticate(
             with: OneGoogleOAuthLogin(
                 clientID: "Your Google API app client ID",
@@ -73,10 +73,10 @@ extension ArticlesNetwork {
             ),
             onLoggedIn: { [weak self] session in
                 /// Save the `session` for future use.
-                onDone(success: true)
+                onDone(true)
             },
             onFail: { error in
-                onDone(success: false)
+                onDone(false)
             }
         )
     }
@@ -89,7 +89,7 @@ extension ArticlesNetwork {
 ```swift
 extension ArticlesNetwork {
 
-    func login(onDone: @escaping (success: Bool) -> Void) {
+    func login(onDone: @escaping (_ success: Bool) -> Void) {
         authenticate(
                 with: OneSpotifyOAuthLogin(
                 clientID: "Your client ID",
@@ -99,10 +99,10 @@ extension ArticlesNetwork {
             ),
             onLoggedIn: { [weak self] session in
                 /// Save the `session` for future use.
-                onDone(success: true)
+                onDone(true)
             },
             onFail: { error in
-                onDone(success: false)
+                onDone(false)
             }
         )
     }
