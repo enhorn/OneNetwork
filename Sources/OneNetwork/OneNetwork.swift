@@ -144,7 +144,7 @@ extension OneNetwork {
         switch authentication {
         case .none: ()
         case .bearer(let token):
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            req.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
         case .custom(let configure):
             configure(request)
         }
