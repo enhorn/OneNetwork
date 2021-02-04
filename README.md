@@ -62,7 +62,7 @@ Both Google and Spotify authentications for iOS is available prebuilt.
 ### Code example with Google OAuth
 
 ```swift
-extension ArticlesNetwork {
+class AuthenticationNetwork: OneNetwork {
 
     func login(onDone: @escaping (_ success: Bool) -> Void) {
         authenticate(
@@ -87,7 +87,7 @@ extension ArticlesNetwork {
 ### Code example with Spotify OAuth
 
 ```swift
-extension ArticlesNetwork {
+class AuthenticationNetwork: OneNetwork {
 
     func login(onDone: @escaping (_ success: Bool) -> Void) {
         authenticate(
