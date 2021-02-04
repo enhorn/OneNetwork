@@ -33,7 +33,7 @@ extension OneNetwork {
         ///   - accessToken: Access token for the session.
         ///   - refreshToken: Refresh token for the session. Defaults to `nil`.
         ///   - expiryDate: Expiry date for the session. Defaults to `nil`.
-        init(accessToken: String, refreshToken: String? = nil, expiryDate: Date? = nil) {
+        public init(accessToken: String, refreshToken: String? = nil, expiryDate: Date? = nil) {
             self.accessToken = accessToken
             self.refreshToken = refreshToken
             self.expiryDate = expiryDate
