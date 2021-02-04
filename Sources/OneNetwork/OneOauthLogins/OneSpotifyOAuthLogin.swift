@@ -29,13 +29,14 @@ public class OneSpotifyOAuthLogin: OneOAuthLogin {
     ///   - clientID: App Client ID.
     ///   - clientSecret: App Client Secret.
     ///   - redirectURI: Redirect URI.
+    ///   - authentication: Initial authentication information. Defaults to `.none`.
     ///   - scopes: API scopes for the app.
-    public init (clientID: String, clientSecret: String, redirectURI: String, scopes: [String]) {
+    public init (clientID: String, clientSecret: String, redirectURI: String, authentication: OneNetwork.Authentication = .none, scopes: [String]) {
         self.clientID = clientID
         self.clientSecret = clientSecret
         self.redirectURI = redirectURI
         self.scopes = scopes
-        self.network = SpotifyNetwork(clientID: clientID, clientSecret: clientSecret, redirectURI: redirectURI)
+        self.network = SpotifyNetwork(clientID: clientID, clientSecret: clientSecret, redirectURI: redirectURI, authentication: authentication)
         super.init()
     }
 
@@ -135,13 +136,11 @@ private class SpotifyNetwork: OneNetwork {
     private let clientSecret: String
     private let redirectURI: String
 
-    var session: SpotifyAccessResult?
-
-    init(clientID: String, clientSecret: String, redirectURI: String) {
+    init(clientID: String, clientSecret: String, redirectURI: String, authentication: Authentication) {
         self.clientID = clientID
         self.clientSecret = clientSecret
         self.redirectURI = redirectURI
-        super.init(encodingMethod: .form)
+        super.init(authentication: authentication, encodingMethod: .form)
     }
 
     func getAccessToken(code: String, onLoggedIn: @escaping OnSuccess, onFail: @escaping OnFail) {
@@ -156,7 +155,7 @@ private class SpotifyNetwork: OneNetwork {
             ],
             onFetched: { [weak self] (result: SpotifyAccessResult?) in
                 if let result = result {
-                    self?.session = result
+                    self?.setAuthentication(to: result)
                     onLoggedIn(result)
                 } else {
                     self?.deAuthenticate()
@@ -169,27 +168,19 @@ private class SpotifyNetwork: OneNetwork {
         }
     }
 
-    func deAuthenticate() {
-        session = nil
-        authentication = .none
-    }
-
     func refresh(onRefreshed: @escaping OnSuccess, onFail: @escaping OnFail) {
-        guard let refreshToken = session?.refreshToken else { return }
+        guard case .bearer(session: let session) = authentication, let refreshToken = session.refreshToken else { return }
         post(
             request: URLRequest(url: URL(string: "https://accounts.spotify.com/api/token")!),
             parameters: [
                 "refresh_token": refreshToken,
-                "client_id": clientID,
-                "client_secret": clientSecret,
-                "grant_type": "refresh_token",
-                "redirect_uri": redirectURI
+                "grant_type": "refresh_token"
             ],
             onFetched: { [weak self] (result: SpotifyAccessResult?) in
-                if let result = result {
-                    self?.session = result
-                    self?.session?.refreshToken = refreshToken
-                    onRefreshed(self?.session ?? result)
+                if var result = result {
+                    result.refreshToken = refreshToken
+                    self?.setAuthentication(to: result)
+                    onRefreshed(result)
                 } else {
                     self?.deAuthenticate()
                     onFail(nil)
@@ -199,6 +190,20 @@ private class SpotifyNetwork: OneNetwork {
             self?.deAuthenticate()
             onFail(error)
         }
+    }
+
+    func setAuthentication(to result: SpotifyAccessResult) {
+        authentication = .bearer(
+            session: OneNetwork.OauthSession(
+                accessToken: result.accessToken,
+                refreshToken: result.refreshToken,
+                expiryDate: Date(timeIntervalSinceNow: result.expiresIn)
+            )
+        )
+    }
+
+    func deAuthenticate() {
+        authentication = .none
     }
 
 }
