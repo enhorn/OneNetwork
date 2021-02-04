@@ -49,6 +49,7 @@ extension OneNetwork {
         oauthLogin = login
         login.start(
             onLoggedIn: { session in
+                self.authentication = .bearer(session: session)
                 onLoggedIn(session)
                 oauthLogin = nil
             },

@@ -11,17 +11,20 @@ public extension OneNetwork {
 
     /// Network authentication configuration.
     enum Authentication {
+
         /// No automatic authentication will be applied to requests.
         case none
 
-        /// Bearer token authentication will be applied to requests.
-        case bearer(token: String)
+        /// Bearer authentication will be applied to requests with the given session.
+        case bearer(session: OauthSession)
 
         /// Custom authentication setup. Configure the request as needed.
         case custom(configure: (URLRequest) -> Void)
+
     }
 
     enum Error: Swift.Error {
+
         /// Returned data was an unparsable string.
         case unknownString(rawValue: String)
 
@@ -33,6 +36,7 @@ public extension OneNetwork {
 
         /// Other type of error.
         case other(originalError: Swift.Error)
+
     }
 
     internal enum Method: Equatable {

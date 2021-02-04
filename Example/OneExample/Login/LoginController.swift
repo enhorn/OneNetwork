@@ -72,7 +72,7 @@ class LoginController: ObservableObject {
     func logInWithOAuth() {
         network.logInWithOAuth(
             onLoggedIn: { [weak self] session in
-                self?.authentication = .bearer(token: session.accessToken)
+                self?.authentication = .bearer(session: session)
                 self?.status = .authenticated(token: session.accessToken)
             },
             onFail: { [weak self] error in
@@ -84,7 +84,7 @@ class LoginController: ObservableObject {
     func logInWithSpotifyOAuth() {
         network.logInWithSpotifyOAuth(
             onLoggedIn: { [weak self] session in
-                self?.authentication = .bearer(token: session.accessToken)
+                self?.authentication = .bearer(session: session)
                 self?.status = .authenticated(token: session.accessToken)
             },
             onFail: { [weak self] error in
