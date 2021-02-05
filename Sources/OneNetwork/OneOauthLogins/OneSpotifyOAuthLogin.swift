@@ -170,6 +170,9 @@ private class SpotifyNetwork: OneNetwork {
 
     func refresh(onRefreshed: @escaping OnSuccess, onFail: @escaping OnFail) {
         guard case .bearer(session: let session) = authentication, let refreshToken = session.refreshToken else { return }
+        guard let refreshAccessToken = "\(clientID):\(clientSecret)".data(using: .utf8)?.base64EncodedString() else { return }
+        authentication = .bearer(session: OauthSession(accessToken: refreshAccessToken))
+
         post(
             request: URLRequest(url: URL(string: "https://accounts.spotify.com/api/token")!),
             parameters: [
