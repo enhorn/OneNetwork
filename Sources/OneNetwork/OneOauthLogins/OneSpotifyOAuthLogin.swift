@@ -177,6 +177,8 @@ private class SpotifyNetwork: OneNetwork {
             request: URLRequest(url: URL(string: "https://accounts.spotify.com/api/token")!),
             parameters: [
                 "refresh_token": refreshToken,
+                "client_id": clientID,
+                "client_secret": clientSecret,
                 "grant_type": "refresh_token"
             ],
             onFetched: { [weak self] (result: SpotifyAccessResult?) in
