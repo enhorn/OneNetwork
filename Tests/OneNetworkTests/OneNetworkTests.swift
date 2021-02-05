@@ -25,7 +25,7 @@ final class OneNetworkTests: XCTestCase {
         let fetchExpectation = expectation(description: "Fetching the user list")
         let logFetchingExpectation = expectation(description: "Expect to get the fetching message")
         let logFetchedExpectation = expectation(description: "Expect to get the fetched message")
-        let logHeaders = "{User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1}"
+        let logHeaders = "{ User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1 }"
 
         logger.onInfo = { message in
             if message == "GET START [Array<User>]: \(url.absoluteString) \(logHeaders)" {
@@ -53,7 +53,7 @@ final class OneNetworkTests: XCTestCase {
         let fetchExpectation = expectation(description: "This request should not work")
         let logFetchingExpectation = expectation(description: "Expect to get the fetching message")
         let logErrorExpectation = expectation(description: "Expect to get the fetching message")
-        let logHeaders = "{User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1}"
+        let logHeaders = "{ User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1 }"
 
         logger.onInfo = { message in
             if message == "GET START [Array<User>]: \(url.absoluteString) \(logHeaders)" {
@@ -85,7 +85,7 @@ final class OneNetworkTests: XCTestCase {
         let loginExpectation = expectation(description: "Logged in")
         let logginInExpectation = expectation(description: "Expect to get the fetching message")
         let LoggedInExpectation = expectation(description: "Expect to get the fetched message")
-        let logHeaders = "{Content-Type: application/json; charset=utf-8, User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1}"
+        let logHeaders = "{ Content-Type: application/json; charset=utf-8, User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1 }"
 
         logger.onInfo = { message in
             if message == "POST START [TokenSuccess]: \(url.absoluteString) \(logHeaders)" {
