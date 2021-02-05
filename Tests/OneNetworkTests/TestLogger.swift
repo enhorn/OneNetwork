@@ -12,6 +12,7 @@ class TestLogger: OneLogger {
 
     var onInfo: (String) -> Void = { _ in }
     var onDebug: (String) -> Void = { _ in }
+    var onWarning: (String) -> Void = { _ in }
     var onError: (Error) -> Void = { _ in }
 
     override func info(_ message: String) {
@@ -20,6 +21,10 @@ class TestLogger: OneLogger {
 
     override func debug(_ message: String) {
         onDebug(message)
+    }
+
+    override func warning(_ message: String) {
+        onWarning(message)
     }
 
     override func error(_ error: Error) {
