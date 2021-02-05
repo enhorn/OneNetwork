@@ -19,7 +19,7 @@ public extension OneNetwork {
         case bearer(session: OauthSession)
 
         /// Custom authentication setup. Configure the request as needed.
-        case custom(configure: (URLRequest) -> Void)
+        case custom(configure: (inout URLRequest) -> Void)
 
     }
 

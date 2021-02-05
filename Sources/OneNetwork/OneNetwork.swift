@@ -146,7 +146,7 @@ extension OneNetwork {
         case .bearer(let token):
             req.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
         case .custom(let configure):
-            configure(request)
+            configure(&req)
         }
 
         return req
