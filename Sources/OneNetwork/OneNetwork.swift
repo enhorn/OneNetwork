@@ -212,7 +212,7 @@ private extension OneNetwork {
             return current + ["\(key): \(value)"]
         }
 
-        return "{\(values.joined(separator: ", "))}"
+        return "{ \(values.joined(separator: ", ")) }"
     }
 
 }

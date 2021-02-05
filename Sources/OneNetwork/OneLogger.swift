@@ -47,7 +47,25 @@ open class OneLogger {
     }
 
     public func error(_ error: Error) {
-        print("🚨 \(error)")
+        if let err = error as? OneNetwork.Error {
+            switch err {
+            case .unknownString(let rawValue):
+                print("🚨 Unparsable JSON:")
+                print(rawValue)
+            case .unparsableData(let data):
+                print("🚨 Unparsable Data:")
+                print(data)
+            case .invalidStatus(let code, let error, let data, let json):
+                print("🚨 Invalid status code: \(code)")
+                if let error = error { print(error) }
+                if let data = data { print(data) }
+                if let json = json { print(json) }
+            case .other(let originalError):
+                print("🚨 \(originalError)")
+            }
+        } else {
+            print("🚨 \(error)")
+        }
     }
 
 }
