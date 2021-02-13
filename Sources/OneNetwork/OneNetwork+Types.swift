@@ -9,6 +9,20 @@ import Foundation
 
 public extension OneNetwork {
 
+    /// Authentication status for the OneNetwork instance.
+    enum AuthenticationStatus {
+
+        /// The sessino has no special authentication set.
+        case unauthenticated
+
+        /// Authentication has a session, and if there is an expiry date, the authentication is still valid.
+        case authenticated
+
+        /// Authentication is handled manually.
+        case manual
+
+    }
+
     /// Network authentication configuration.
     enum Authentication {
 

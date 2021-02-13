@@ -39,14 +39,12 @@ open class OneNetwork: ObservableObject {
     internal var failureCallbacks: [UUID: (Error) -> Void] = [:]
 
     /// Authentication configuration.
-    public var authentication: Authentication {
-        didSet { isAuthenticated = authentication.isAuthenticated }
+    @Published public var authentication: Authentication {
+        willSet { objectWillChange.send() }
     }
 
     /// Published value for if the network is authenticated.
-    @Published public var isAuthenticated: Bool {
-        willSet { objectWillChange.send() }
-    }
+    public var authenticationStatus: OneNetwork.AuthenticationStatus { authentication.status }
 
     public let objectWillChange = PassthroughSubject<Void, Never>()
 
@@ -75,7 +73,6 @@ open class OneNetwork: ObservableObject {
         self.cache = cache
         self.logger = logger
         self.encodingMethod = encodingMethod
-        self.isAuthenticated = authentication.isAuthenticated
     }
 
 }
@@ -252,11 +249,17 @@ private extension OneNetwork.Method {
 
 private extension OneNetwork.Authentication {
 
-    var isAuthenticated: Bool {
+    var status: OneNetwork.AuthenticationStatus {
         if case .none = self {
-            return false
+            return .unauthenticated
+        } else if case .bearer(let session) = self {
+            if let expiryDate = session.expiryDate {
+                return (expiryDate > Date()) ? .authenticated : .unauthenticated
+            } else {
+                return .authenticated
+            }
         } else {
-            return true
+            return .manual
         }
     }
 
