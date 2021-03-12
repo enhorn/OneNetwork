@@ -18,6 +18,9 @@ public extension OneNetwork {
         /// Authentication has a session, and if there is an expiry date, the authentication is still valid.
         case authenticated
 
+        /// Authentication has expired.
+        case expired
+
         /// Authentication is handled manually.
         case manual
 

@@ -258,7 +258,7 @@ private extension OneNetwork.Authentication {
             return .unauthenticated
         } else if case .bearer(let session) = self {
             if let expiryDate = session.expiryDate {
-                return (expiryDate > Date()) ? .authenticated : .unauthenticated
+                return (expiryDate > Date()) ? .authenticated : .expired
             } else {
                 return .authenticated
             }
