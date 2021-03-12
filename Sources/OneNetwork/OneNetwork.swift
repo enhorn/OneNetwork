@@ -40,11 +40,14 @@ open class OneNetwork: ObservableObject {
 
     /// Authentication configuration.
     @Published public var authentication: Authentication {
-        willSet { objectWillChange.send() }
+        willSet {
+            authenticationStatus = newValue.status
+            objectWillChange.send()
+        }
     }
 
     /// Published value for if the network is authenticated.
-    public var authenticationStatus: OneNetwork.AuthenticationStatus { authentication.status }
+    @Published internal(set) public var authenticationStatus: AuthenticationStatus
 
     public let objectWillChange = PassthroughSubject<Void, Never>()
 
@@ -70,6 +73,7 @@ open class OneNetwork: ObservableObject {
         self.coder = coder ?? defaultCoder
         self.session = session ?? defaultURLSession
         self.authentication = authentication
+        self.authenticationStatus = authentication.status
         self.cache = cache
         self.logger = logger
         self.encodingMethod = encodingMethod
