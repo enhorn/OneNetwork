@@ -47,7 +47,10 @@ public extension OneNetwork {
         case plain(String)
 
         /// An array of parameters.
-        case array([String])
+        case array([Parameter])
+
+        /// An array of parameters.
+        case dictionary([String: Parameter])
 
         public func encode(to encoder: Encoder) throws {
             switch self {
@@ -55,6 +58,9 @@ public extension OneNetwork {
                 var container = encoder.singleValueContainer()
                 try container.encode(value)
             case .array(let value):
+                var container = encoder.singleValueContainer()
+                try container.encode(value)
+            case .dictionary(let value):
                 var container = encoder.singleValueContainer()
                 try container.encode(value)
             }

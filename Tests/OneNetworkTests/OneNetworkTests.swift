@@ -136,14 +136,22 @@ final class OneNetworkTests: XCTestCase {
         let params: [String: OneNetwork.Parameter] = [
             "key1": .plain("value1"),
             "key2": .array([
-                "value2",
-                "value3"
+                .plain("value2"),
+                .plain("value3")
+            ]),
+            "key3": .dictionary([
+                "key4": .plain("value4"),
+                "key5": .array([
+                    .plain("value2"),
+                    .plain("value3")
+                ])
             ])
         ]
 
         let data = try! JSONEncoder().encode(params)
 
-        XCTAssertEqual(String(data: data, encoding: .utf8)!, "{\"key1\":\"value1\",\"key2\":[\"value2\",\"value3\"]}")
+        let facit = "{\"key1\":\"value1\",\"key3\":{\"key4\":\"value4\",\"key5\":[\"value2\",\"value3\"]},\"key2\":[\"value2\",\"value3\"]}"
+        XCTAssertEqual(String(data: data, encoding: .utf8)!, facit)
     }
 
 }
