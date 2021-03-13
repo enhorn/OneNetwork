@@ -24,7 +24,7 @@ extension Dictionary where Key == String, Value == String {
     func typed() -> [String: OneNetwork.Parameter] {
         var values = [String: OneNetwork.Parameter]()
         for (key, value) in self {
-            values[key] = .plain(value)
+            values[key] = .string(value)
         }
         return values
     }

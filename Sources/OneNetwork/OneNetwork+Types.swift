@@ -43,18 +43,26 @@ public extension OneNetwork {
     /// Network request parameter type.
     enum Parameter: Equatable, Encodable {
 
-        /// Plain string parameter.
-        case plain(String)
+        /// String parameter.
+        case string(String)
+
+        /// Number parameter.
+        case number(Int)
 
         /// An array of parameters.
+        /// Not supported by `OnePostEncodingMethod.form` at this point.
         case array([Parameter])
 
         /// An array of parameters.
+        /// Not supported by `OnePostEncodingMethod.form` at this point.
         case dictionary([String: Parameter])
 
         public func encode(to encoder: Encoder) throws {
             switch self {
-            case .plain(let value):
+            case .string(let value):
+                var container = encoder.singleValueContainer()
+                try container.encode(value)
+            case .number(let value):
                 var container = encoder.singleValueContainer()
                 try container.encode(value)
             case .array(let value):

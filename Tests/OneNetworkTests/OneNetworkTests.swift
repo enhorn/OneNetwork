@@ -126,7 +126,7 @@ final class OneNetworkTests: XCTestCase {
             }
         }
 
-        let parameters: [String: OneNetwork.Parameter] = ["email": .plain("eve.holt@reqres.in"), "password": .plain("lolo")]
+        let parameters: [String: OneNetwork.Parameter] = ["email": .string("eve.holt@reqres.in"), "password": .string("lolo")]
         network.post(request: URLRequest(url: url), parameters: parameters)
 
         wait(for: [logginInExpectation, loggedInExpectation], timeout: 10.0)
@@ -134,23 +134,23 @@ final class OneNetworkTests: XCTestCase {
 
     func testParameterEncoding() {
         let params: [String: OneNetwork.Parameter] = [
-            "key1": .plain("value1"),
+            "key1": .string("value1"),
             "key2": .array([
-                .plain("value2"),
-                .plain("value3")
+                .string("value2"),
+                .string("value3")
             ]),
             "key3": .dictionary([
-                "key4": .plain("value4"),
+                "key4": .string("value4"),
                 "key5": .array([
-                    .plain("value2"),
-                    .plain("value3")
+                    .number(42),
+                    .string("value5")
                 ])
             ])
         ]
 
         let data = try! JSONEncoder().encode(params)
 
-        let facit = "{\"key1\":\"value1\",\"key3\":{\"key4\":\"value4\",\"key5\":[\"value2\",\"value3\"]},\"key2\":[\"value2\",\"value3\"]}"
+        let facit = "{\"key1\":\"value1\",\"key3\":{\"key4\":\"value4\",\"key5\":[42,\"value5\"]},\"key2\":[\"value2\",\"value3\"]}"
         XCTAssertEqual(String(data: data, encoding: .utf8)!, facit)
     }
 

@@ -169,13 +169,25 @@ extension OneNetwork {
             var body = ""
 
             for (key, parameter) in parameters {
-                if case .plain(let value) = parameter, let val = value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                if let value = parameter.stringValue, let val = value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
                     if !body.isEmpty { body.append("&") }
                     body.append("\(key)=\(val)")
                 }
             }
 
             return body.data(using: .utf8)
+        }
+    }
+
+}
+
+private extension OneNetwork.Parameter {
+
+    var stringValue: String? {
+        switch self {
+        case .string(let value): return value
+        case .number(let value): return String(value)
+        default: return nil
         }
     }
 
