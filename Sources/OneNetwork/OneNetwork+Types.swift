@@ -40,6 +40,28 @@ public extension OneNetwork {
 
     }
 
+    /// Network request parameter type.
+    enum Parameter: Equatable, Encodable {
+
+        /// Plain string parameter.
+        case plain(String)
+
+        /// An array of parameters.
+        case array([String])
+
+        public func encode(to encoder: Encoder) throws {
+            switch self {
+            case .plain(let value):
+                var container = encoder.singleValueContainer()
+                try container.encode(value)
+            case .array(let value):
+                var container = encoder.singleValueContainer()
+                try container.encode(value)
+            }
+        }
+
+    }
+
     enum Error: Swift.Error {
 
         /// Returned data was an unparsable string.
@@ -59,8 +81,8 @@ public extension OneNetwork {
     internal enum Method: Equatable {
 
         case get(useCache: Bool = true)
-        case post(parameters: [String: String]?)
-        case put(parameters: [String: String]?)
+        case post(parameters: [String: Parameter]?)
+        case put(parameters: [String: Parameter]?)
         case delete
 
         var stringValue : String {

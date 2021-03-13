@@ -115,11 +115,11 @@ extension OneNetwork {
                     return
                 }
 
-                guard let data = data else { resultQueue.async { onFetched(nil) }; return }
-
                 if let self = self, let url = request.url {
                     self.logger?.info("\(method.stringValue) DONE [\(type)]: \(url.absoluteString) \(self.logHeaders(request: configuredRequest))")
                 }
+
+                guard let data = data else { resultQueue.async { onFetched(nil) }; return }
 
                 if method.useCache {
                     self?.cache?.cacheData(data, for: cacheKey)
@@ -161,15 +161,15 @@ extension OneNetwork {
         return req
     }
 
-    private func postData(parameters: [String: String]) -> Data? {
+    private func postData(parameters: [String: Parameter]) -> Data? {
         switch encodingMethod {
         case .json:
             return try? coder.encoder.encode(parameters)
         case .form:
             var body = ""
 
-            for (key, value) in parameters {
-                if let val = value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            for (key, parameter) in parameters {
+                if case .plain(let value) = parameter, let val = value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
                     if !body.isEmpty { body.append("&") }
                     body.append("\(key)=\(val)")
                 }
@@ -184,7 +184,11 @@ extension OneNetwork {
 private extension OneNetwork {
 
     func handle<T: Codable>(_ data: Data, resultQueue: DispatchQueue, onFetched: @escaping (T?) -> Void) {
-        if let decoded: T = decode(from: data) {
+        if T.self == NullResponse.self {
+            resultQueue.async {
+                onFetched(nil)
+            }
+        } else if let decoded: T = decode(from: data) {
             resultQueue.async {
                 onFetched(decoded)
             }

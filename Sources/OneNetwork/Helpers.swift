@@ -18,3 +18,23 @@ extension DateFormatter {
     }()
 
 }
+
+extension Dictionary where Key == String, Value == String {
+
+    func typed() -> [String: OneNetwork.Parameter] {
+        var values = [String: OneNetwork.Parameter]()
+        for (key, value) in self {
+            values[key] = .plain(value)
+        }
+        return values
+    }
+
+}
+
+struct NullResponse: Codable {
+
+    static let callback = { (res: NullResponse?) in
+        OneLogger.standard.info("Expected empty body returned.")
+    }
+
+}

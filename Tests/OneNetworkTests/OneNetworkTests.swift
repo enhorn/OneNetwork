@@ -84,14 +84,14 @@ final class OneNetworkTests: XCTestCase {
 
         let loginExpectation = expectation(description: "Logged in")
         let logginInExpectation = expectation(description: "Expect to get the fetching message")
-        let LoggedInExpectation = expectation(description: "Expect to get the fetched message")
+        let loggedInExpectation = expectation(description: "Expect to get the fetched message")
         let logHeaders = "{ Content-Type: application/json; charset=utf-8, User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1 }"
 
         logger.onInfo = { message in
             if message == "POST START [TokenSuccess]: \(url.absoluteString) \(logHeaders)" {
                 logginInExpectation.fulfill()
             } else if message == "POST DONE [TokenSuccess]: \(url.absoluteString) \(logHeaders)" {
-                LoggedInExpectation.fulfill()
+                loggedInExpectation.fulfill()
             } else {
                 XCTFail("Strange message: \(message)")
             }
@@ -106,7 +106,44 @@ final class OneNetworkTests: XCTestCase {
             loginExpectation.fulfill()
         }
 
-        wait(for: [loginExpectation, logginInExpectation, LoggedInExpectation], timeout: 10.0)
+        wait(for: [loginExpectation, logginInExpectation, loggedInExpectation], timeout: 10.0)
+    }
+
+    func testNullPostWithoutCallback() {
+        let url = URL(string: "https://reqres.in/api/login")!
+
+        let logginInExpectation = expectation(description: "Expect to get the fetching message")
+        let loggedInExpectation = expectation(description: "Expect to get the fetched message")
+        let logHeaders = "{ Content-Type: application/json; charset=utf-8, User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Mobile/15E148 Safari/604.1 }"
+
+        logger.onInfo = { message in
+            if message == "POST START [NullResponse]: \(url.absoluteString) \(logHeaders)" {
+                logginInExpectation.fulfill()
+            } else if message == "POST DONE [NullResponse]: \(url.absoluteString) \(logHeaders)" {
+                loggedInExpectation.fulfill()
+            } else {
+                XCTFail("Strange message: \(message)")
+            }
+        }
+
+        let parameters: [String: OneNetwork.Parameter] = ["email": .plain("eve.holt@reqres.in"), "password": .plain("lolo")]
+        network.post(request: URLRequest(url: url), parameters: parameters)
+
+        wait(for: [logginInExpectation, loggedInExpectation], timeout: 10.0)
+    }
+
+    func testParameterEncoding() {
+        let params: [String: OneNetwork.Parameter] = [
+            "key1": .plain("value1"),
+            "key2": .array([
+                "value2",
+                "value3"
+            ])
+        ]
+
+        let data = try! JSONEncoder().encode(params)
+
+        XCTAssertEqual(String(data: data, encoding: .utf8)!, "{\"key1\":\"value1\",\"key2\":[\"value2\",\"value3\"]}")
     }
 
 }
