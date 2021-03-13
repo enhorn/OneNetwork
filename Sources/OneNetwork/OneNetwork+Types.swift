@@ -49,6 +49,9 @@ public extension OneNetwork {
         /// Number parameter.
         case number(Int)
 
+        /// Boolean parameter.
+        case bool(Bool)
+
         /// An array of parameters.
         /// Not supported by `OnePostEncodingMethod.form` at this point.
         case array([Parameter])
@@ -63,6 +66,9 @@ public extension OneNetwork {
                 var container = encoder.singleValueContainer()
                 try container.encode(value)
             case .number(let value):
+                var container = encoder.singleValueContainer()
+                try container.encode(value)
+            case .bool(let value):
                 var container = encoder.singleValueContainer()
                 try container.encode(value)
             case .array(let value):

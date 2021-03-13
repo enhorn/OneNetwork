@@ -137,7 +137,7 @@ final class OneNetworkTests: XCTestCase {
             "key1": .string("value1"),
             "key2": .array([
                 .string("value2"),
-                .string("value3")
+                .bool(true)
             ]),
             "key3": .dictionary([
                 "key4": .string("value4"),
@@ -150,7 +150,7 @@ final class OneNetworkTests: XCTestCase {
 
         let data = try! JSONEncoder().encode(params)
 
-        let facit = "{\"key1\":\"value1\",\"key3\":{\"key4\":\"value4\",\"key5\":[42,\"value5\"]},\"key2\":[\"value2\",\"value3\"]}"
+        let facit = "{\"key1\":\"value1\",\"key3\":{\"key4\":\"value4\",\"key5\":[42,\"value5\"]},\"key2\":[\"value2\",true]}"
         XCTAssertEqual(String(data: data, encoding: .utf8)!, facit)
     }
 
