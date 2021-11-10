@@ -43,7 +43,6 @@ struct LoginView: View {
                 }, label: { Text("Log In") })
             }
 
-            #if !targetEnvironment(macCatalyst)
             Text("or")
 
             Button(action: {
@@ -53,7 +52,6 @@ struct LoginView: View {
             Button(action: {
                 self.loginController.logInWithSpotifyOAuth()
             }, label: { Text("Log in to Spotify with OAuth") })
-            #endif
         }.padding(16.0)
     }
 
