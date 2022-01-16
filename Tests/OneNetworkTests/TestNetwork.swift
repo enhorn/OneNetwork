@@ -24,4 +24,10 @@ class TestNetwork: OneNetwork {
         })
     }
 
+    func fetchUsersAsync(fail: Bool = false) async -> [User]? {
+        let path = fail ? "failing" : "users"
+        let url = URL(string: "https://jsonplaceholder.typicode.com/\(path)")!
+        return await get(request: URLRequest(url: url))
+    }
+
 }

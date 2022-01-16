@@ -7,7 +7,79 @@
 
 import Foundation
 
-// MARK: Auto Decoded Results
+// MARK: Async / Await API
+
+public extension OneNetwork {
+
+    /// GET request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - useCache: Whether or not to use any available cache. Defailt to `true`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    func get<T: Codable>(request: URLRequest, useCache: Bool = true, resultQueue: DispatchQueue = .main) async -> T? {
+        await withCheckedContinuation {
+            get(request: request, useCache: useCache, resultQueue: resultQueue, onFetched: $0.resume)
+        }
+    }
+
+    /// POST request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - parameters: Parameters for the request. Defaults to `nil`.
+    ///   - useCache: Whether or not to use any available cache. Defaults to `true`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    func post<T: Codable>(request: URLRequest, parameters: [String: String]?, resultQueue: DispatchQueue = .main) async -> T? {
+        await withCheckedContinuation {
+            post(request: request, parameters: parameters, resultQueue: resultQueue, onFetched: $0.resume)
+        }
+    }
+
+    /// POST request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - parameters: Parameters for the request. Defaults to `nil`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    func post<T: Codable>(request: URLRequest, parameters: [String: Parameter]?, resultQueue: DispatchQueue = .main) async -> T? {
+        await withCheckedContinuation {
+            post(request: request, parameters: parameters, resultQueue: resultQueue, onFetched: $0.resume)
+        }
+    }
+
+    /// PUT request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - parameters: Parameters for the request. Defaults to `nil`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    func put<T: Codable>(request: URLRequest, parameters: [String: String]?, resultQueue: DispatchQueue = .main) async -> T? {
+        await withCheckedContinuation {
+            put(request: request, parameters: parameters, resultQueue: resultQueue, onFetched: $0.resume)
+        }
+    }
+
+    /// PUT request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - parameters: Parameters for the request. Defaults to `nil`.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    func put<T: Codable>(request: URLRequest, parameters: [String: Parameter]?, resultQueue: DispatchQueue = .main) async -> T? {
+        await withCheckedContinuation {
+            put(request: request, parameters: parameters, resultQueue: resultQueue, onFetched: $0.resume)
+        }
+    }
+
+    /// DELETE request.
+    /// - Parameters:
+    ///   - request: URL request. Configured with any needed authentication.
+    ///   - resultQueue: Which dispatch queue the result callback should be called on. Defaults to `.main`.
+    func delete<T: Codable>(request: URLRequest, resultQueue: DispatchQueue = .main) async -> T? {
+        await withCheckedContinuation {
+            delete(request: request, resultQueue: resultQueue, onFetched: $0.resume)
+        }
+    }
+
+}
+
+// MARK: Callback API
 
 public extension OneNetwork {
 

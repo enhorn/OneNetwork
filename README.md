@@ -6,6 +6,7 @@ Minimalistic networking library with SwiftUI in mind.
 - Automatically parse to your `Codable` models from the response JSON.
 - Predestine your network responses during development, making your `PreviewProvider` implementations network independent. No need to muck about with complex mocking solutions for unit & UI tests either.
 - OAUth authentication, with predefined authentications for Google & Spotify, both available as login examples in the bundled Example app (needs Client ID etc.).
+- Support for Async / Await.
 - Example app with implementations of network requests and and different authentication options.
 
 ## Example usage
@@ -51,6 +52,25 @@ struct ContentView_Previews: PreviewProvider {
         // the view will be able to behave like it is networking like normal.
         ContentView(network: ArticlesNetwork(cache: .predestinedArticlesCache))
     }
+}
+```
+
+## Async / Await
+
+OneNetwork also support Async / Await, which can be used outside of SwiftUI.
+Here we see how the type is inferred from the result type of the fetch function.
+
+```swift
+class AsyncNetwork {
+
+    func fetchItems() async -> [Item]? {
+        await get(
+            request: URLRequest(
+                url: URL(string: "your endpoint url")
+            )
+        )
+    }
+
 }
 ```
 

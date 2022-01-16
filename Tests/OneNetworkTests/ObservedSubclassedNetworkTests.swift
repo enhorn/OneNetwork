@@ -49,4 +49,13 @@ class ObservedSubclassedNetworkTests: XCTestCase {
         wait(for: [fetchExpectation], timeout: 10.0)
     }
 
+    func testAsyncUserFetch() {
+        Task {
+            let users: [User]? = await testNetwork.fetchUsersAsync(fail: false)
+            XCTAssertNotNil(users)
+            let noUsers: [User]? = await testNetwork.fetchUsersAsync(fail: true)
+            XCTAssertNil(noUsers)
+        }
+    }
+
 }
