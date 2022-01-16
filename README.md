@@ -61,7 +61,7 @@ OneNetwork also support Async / Await, which can be used outside of SwiftUI.
 Here we see how the type is inferred from the result type of the fetch function.
 
 ```swift
-class AsyncNetwork {
+class AsyncNetwork: OneNetwork {
 
     func fetchItems() async -> [Item]? {
         await get(
