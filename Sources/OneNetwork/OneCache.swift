@@ -24,7 +24,6 @@ open class OneCache: NSObject {
         self.cache.totalCostLimit = Int(cacheLimit * 1024 * 1024)
         self.cache.delegate = self
         initialData.forEach { key, data in
-            self.storage[StorageKey(data: data as NSData)] = data as NSData
             self.cacheData(data, for: key)
         }
     }
@@ -41,8 +40,8 @@ open class OneCache: NSObject {
     /// - Parameter data: Data to be cached.
     /// - Parameter key: Key to be cached at.
     open func cacheData(_ data: Data, for key: OneCacheKey) {
-        cache.setObject(data as NSData, forKey: key, cost: data.count)
         storage[StorageKey(data: data as NSData)] = data as NSData
+        cache.setObject(data as NSData, forKey: key, cost: data.count)
         keys.insert(key)
     }
 
