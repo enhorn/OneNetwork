@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import OneLogger
 
 public enum OnePostEncodingMethod {
 
@@ -66,7 +67,7 @@ open class OneNetwork: ObservableObject {
         session: URLSession? = nil,
         authentication: Authentication = .none,
         cache: OneCache? = nil,
-        logger: OneLogger? = .standard,
+        logger: OneLogger? = OnePrintLogger.oneNetwork,
         encodingMethod: OnePostEncodingMethod = .json
     ) {
         self.userAgent = userAgent ?? defaultUserAgent

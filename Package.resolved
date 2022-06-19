@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "OneLogger",
+        "repositoryURL": "https://github.com/enhorn/OneLogger.git",
+        "state": {
+          "branch": "main",
+          "revision": "b474d053757361f2dfaf268c7e9a7904bce9be92",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

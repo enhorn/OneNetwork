@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "OneNetwork",
     platforms: [
-        .macOS(.v10_15),
+        .macOS(.v11),
         .iOS(.v13),
         .tvOS(.v13),
         .watchOS(.v6)
@@ -17,9 +17,17 @@ let package = Package(
             targets: ["OneNetwork"]
         )
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/enhorn/OneLogger.git",
+            .branch("main")
+        )
+    ],
     targets: [
         .target(
-            name: "OneNetwork"
+            name: "OneNetwork",
+            dependencies: ["OneLogger"],
+            exclude: ["../../Example"]
         ),
         .testTarget(
             name: "OneNetworkTests",

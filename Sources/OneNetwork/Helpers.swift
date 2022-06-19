@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OneLogger
 
 extension DateFormatter {
 
@@ -34,7 +35,7 @@ extension Dictionary where Key == String, Value == String {
 struct NullResponse: Codable {
 
     static let callback = { (res: NullResponse?) in
-        OneLogger.standard.info("Expected empty body returned.")
+        OnePrintLogger.oneNetwork.info("Expected empty body returned.")
     }
 
 }

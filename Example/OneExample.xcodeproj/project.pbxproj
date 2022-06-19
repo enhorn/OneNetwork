@@ -14,7 +14,6 @@
 		6BB58E11240C41A2004EE938 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BB58E10240C41A2004EE938 /* Preview Assets.xcassets */; };
 		6BB58E14240C41A2004EE938 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6BB58E12240C41A2004EE938 /* LaunchScreen.storyboard */; };
 		6BB58E1D240C430D004EE938 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB58E1C240C430D004EE938 /* LoginController.swift */; };
-		6BB58E20240C45D7004EE938 /* OneNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 6BB58E1F240C45D7004EE938 /* OneNetwork */; };
 		6BB58E25240CEF32004EE938 /* LoginNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB58E24240CEF32004EE938 /* LoginNetwork.swift */; };
 		6BB58E27240CF165004EE938 /* URLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB58E22240CEDB2004EE938 /* URLs.swift */; };
 		6BB58E29240CF488004EE938 /* Caches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB58E28240CF488004EE938 /* Caches.swift */; };
@@ -26,6 +25,7 @@
 		6BB58E38240D2A5E004EE938 /* LoadingImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB58E37240D2A5E004EE938 /* LoadingImage.swift */; };
 		6BB58E39240D2FAA004EE938 /* UsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB58E31240D2274004EE938 /* UsersView.swift */; };
 		6BCAB8D2240D5F9900D43FE0 /* UserListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BCAB8D1240D5F9900D43FE0 /* UserListItemView.swift */; };
+		8830CE19285F232C002C7EFD /* OneNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 8830CE18285F232C002C7EFD /* OneNetwork */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +49,7 @@
 		6BB58E35240D279E004EE938 /* UserDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsView.swift; sourceTree = "<group>"; };
 		6BB58E37240D2A5E004EE938 /* LoadingImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImage.swift; sourceTree = "<group>"; };
 		6BCAB8D1240D5F9900D43FE0 /* UserListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListItemView.swift; sourceTree = "<group>"; };
+		8830CE16285F231E002C7EFD /* OneNetwork */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = OneNetwork; path = ..; sourceTree = "<group>"; };
 		8857F2EB2737F25D00EF896F /* OneExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneExample.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6BB58E20240C45D7004EE938 /* OneNetwork in Frameworks */,
+				8830CE19285F232C002C7EFD /* OneNetwork in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,8 +68,10 @@
 		6BB58DFB240C41A0004EE938 = {
 			isa = PBXGroup;
 			children = (
+				8830CE15285F231E002C7EFD /* Packages */,
 				6BB58E06240C41A0004EE938 /* OneExample */,
 				6BB58E05240C41A0004EE938 /* Products */,
+				8830CE17285F232C002C7EFD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -147,6 +150,21 @@
 			path = Users;
 			sourceTree = "<group>";
 		};
+		8830CE15285F231E002C7EFD /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				8830CE16285F231E002C7EFD /* OneNetwork */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		8830CE17285F232C002C7EFD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -164,7 +182,7 @@
 			);
 			name = OneExample;
 			packageProductDependencies = (
-				6BB58E1F240C45D7004EE938 /* OneNetwork */,
+				8830CE18285F232C002C7EFD /* OneNetwork */,
 			);
 			productName = OneExample;
 			productReference = 6BB58E04240C41A0004EE938 /* OneExample.app */;
@@ -195,7 +213,6 @@
 			);
 			mainGroup = 6BB58DFB240C41A0004EE938;
 			packageReferences = (
-				6BB58E1E240C45D7004EE938 /* XCRemoteSwiftPackageReference "OneNetwork" */,
 			);
 			productRefGroup = 6BB58E05240C41A0004EE938 /* Products */;
 			projectDirPath = "";
@@ -441,21 +458,9 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		6BB58E1E240C45D7004EE938 /* XCRemoteSwiftPackageReference "OneNetwork" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:enhorn/OneNetwork.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		6BB58E1F240C45D7004EE938 /* OneNetwork */ = {
+		8830CE18285F232C002C7EFD /* OneNetwork */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6BB58E1E240C45D7004EE938 /* XCRemoteSwiftPackageReference "OneNetwork" */;
 			productName = OneNetwork;
 		};
 /* End XCSwiftPackageProductDependency section */
