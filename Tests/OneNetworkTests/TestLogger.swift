@@ -6,28 +6,31 @@
 //
 
 import XCTest
+import OneLogger
 @testable import OneNetwork
 
 class TestLogger: OneLogger {
+
+    var level: OneLogLevel = .info
 
     var onInfo: (String) -> Void = { _ in }
     var onDebug: (String) -> Void = { _ in }
     var onWarning: (String) -> Void = { _ in }
     var onError: (Error) -> Void = { _ in }
 
-    override func info(_ message: String) {
+    func info(_ message: String) {
         onInfo(message)
     }
 
-    override func debug(_ message: String) {
+    func debug(_ message: String) {
         onDebug(message)
     }
 
-    override func warning(_ message: String) {
+    func warning(_ message: String) {
         onWarning(message)
     }
 
-    override func error(_ error: Error) {
+    func error(_ error: Error) {
         onError(error)
     }
 
