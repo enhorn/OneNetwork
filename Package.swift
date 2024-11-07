@@ -20,7 +20,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/enhorn/OneLogger.git",
-            .branch("main")
+            .upToNextMajor(from: "1.1.0")
         )
     ],
     targets: [
