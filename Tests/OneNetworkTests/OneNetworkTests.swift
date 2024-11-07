@@ -148,9 +148,11 @@ final class OneNetworkTests: XCTestCase {
             ])
         ]
 
-        let data = try! JSONEncoder().encode(params)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting.insert(.sortedKeys)
+        let data = try! encoder.encode(params)
 
-        let facit = "{\"key1\":\"value1\",\"key3\":{\"key4\":\"value4\",\"key5\":[42,\"value5\"]},\"key2\":[\"value2\",true]}"
+        let facit = "{\"key1\":\"value1\",\"key2\":[\"value2\",true],\"key3\":{\"key4\":\"value4\",\"key5\":[42,\"value5\"]}}"
         XCTAssertEqual(String(data: data, encoding: .utf8)!, facit)
     }
 

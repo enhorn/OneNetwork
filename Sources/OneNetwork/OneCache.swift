@@ -9,6 +9,8 @@ import Foundation
 
 open class OneCache: NSObject {
 
+    private let queue: DispatchQueue = DispatchQueue(label: "OneCacheQueue", qos: .background)
+
     fileprivate typealias Storage = [StorageKey: NSData]
     typealias Cache = NSCache<OneCacheKey, NSData>
 
@@ -40,50 +42,75 @@ open class OneCache: NSObject {
     /// - Parameter data: Data to be cached.
     /// - Parameter key: Key to be cached at.
     open func cacheData(_ data: Data, for key: OneCacheKey) {
-        storage[StorageKey(data: data as NSData)] = data as NSData
-        cache.setObject(data as NSData, forKey: key, cost: data.count)
-        keys.insert(key)
+        queue.sync {
+            storage[StorageKey(data: data as NSData)] = data as NSData
+            cache.setObject(data as NSData, forKey: key)
+            keys.insert(key)
+        }
     }
 
     /// Reteive cacked data for a goven key.
     /// - Parameter key: Key to fetch with.
     open func cache(for key: OneCacheKey) -> Data? {
-        guard let data: NSData = cache.object(forKey: key) else { return nil }
-        return data as Data
+        var data: NSData?
+
+        queue.sync {
+            data = cache.object(forKey: keys.first(where: { $0 == key }) ?? key)
+        }
+
+        return data as? Data
     }
 
     /// Remove cache fo the given key.
     /// - Parameter key: Key to remove cache for.
     @discardableResult
     open func removeCache(for key: OneCacheKey) -> Data? {
-        let current = cache.object(forKey: key)
-        cache.removeObject(forKey: key)
-        keys.remove(key)
-        if let current = current { storage.removeValue(forKey: StorageKey(data: current)) }
+        var current: NSData?
+
+        queue.sync {
+            current = cache.object(forKey: key)
+            cache.removeObject(forKey: key)
+            keys.remove(key)
+            if let current = current {
+                storage.removeValue(forKey: StorageKey(data: current))
+            }
+        }
+
         return current as Data?
     }
 
     /// Remove all cached object.
     open func emptyCache() {
-        storage.removeAll()
-        cache.removeAllObjects()
-        keys.removeAll()
+        queue.sync {
+            storage.removeAll()
+            cache.removeAllObjects()
+            keys.removeAll()
+        }
     }
 
     /// Get a dictionary representation of the current cache state.
     open func dictionaryRepresentation() -> [OneCacheKey: Data] {
-        return keys.reduce([:]) { current, key in
-            guard let data = cache(for: key) else { return current }
-            var next = current
-            next[key] = data
-            return next
+        var dict = [OneCacheKey: Data]()
+
+        queue.sync {
+            for key in keys {
+                if let data: NSData = cache.object(forKey: key) {
+                    dict[key] = data as Data
+                }
+            }
         }
+
+        return dict
     }
 
     /// Checks if the cache is currently storing a value for the key.
     /// - Parameter key: Key to check for cache with.
     open func hasValue(for key: OneCacheKey) -> Bool {
-        return keys.contains(key)
+        var hasValue = false
+        queue.sync {
+            hasValue = keys.contains(key)
+        }
+        return hasValue
     }
 
 }
@@ -91,7 +118,9 @@ open class OneCache: NSObject {
 extension OneCache: NSCacheDelegate {
 
     public func cache(_ cache: NSCache<OneCacheKey, NSData>, willEvictObject obj: NSData) {
-        storage.removeValue(forKey: StorageKey(data: obj))
+        queue.sync {
+            _ = storage.removeValue(forKey: StorageKey(data: obj))
+        }
     }
 
 }

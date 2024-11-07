@@ -30,6 +30,8 @@ public enum OnePostEncodingMethod {
 
 open class OneNetwork: ObservableObject {
 
+    private let queue: DispatchQueue = .global(qos: .background)
+
     private let userAgent: String
     private let coder: Coder
     private let session: URLSession
@@ -85,6 +87,12 @@ open class OneNetwork: ObservableObject {
 extension OneNetwork {
 
     func perform<T: Codable>(request: URLRequest, method: Method, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
+        queue.sync {
+            self.performRequest(request: request, method: method, resultQueue: resultQueue, onFetched: onFetched)
+        }
+    }
+
+    private func performRequest<T: Codable>(request: URLRequest, method: Method, resultQueue: DispatchQueue = .main, onFetched: @escaping (T?) -> Void) -> Self {
         let cacheKey = OneCacheKey(for: request)
         let type = String(describing: T.self)
 

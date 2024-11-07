@@ -22,6 +22,8 @@ final class OneCacheTests: XCTestCase {
         XCTAssertFalse(cache.hasValue(for: key))
         cache.cacheData(data, for: key)
         XCTAssert(cache.hasValue(for: key))
+        XCTAssertNotNil(cache.cache(for: key))
+
 
         let fetchExpectation = expectation(description: "Wait for the cached response.")
         network.get(request: request, onFetched: { (result: Cached?) in
